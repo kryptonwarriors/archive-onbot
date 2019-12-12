@@ -64,6 +64,17 @@ public class BetterTeleOp extends LinearOpMode {
         LeftBack.setPower(-2 * gamepad1.left_trigger);
         RightForward.setPower(2 * gamepad1.left_trigger);
         RightBack.setPower(-2 * gamepad1.left_trigger);
+         if (gamepad1.y == true) {
+          LeftForward.setPower(-0.8);
+          LeftBack.setPower(-0.8);
+          RightForward.setPower(0.8);
+          RightBack.setPower(0.8);
+        } else if (gamepad1.a == true) {
+          LeftForward.setPower(0.8);
+          LeftBack.setPower(0.8);
+          RightForward.setPower(-0.8);
+          RightBack.setPower(-0.8);
+        }
         if (gamepad1.dpad_up == true) {
           RightForward.setPower(0);
           RightBack.setPower(1);
@@ -104,12 +115,12 @@ public class BetterTeleOp extends LinearOpMode {
           RightClamp.setPosition(1);
           // Clamp in
         }
-        if (gamepad2.a == true) {
+        if (gamepad2.y == true) {
           LeftClamp.setPosition(0.3);
           RightClamp.setPosition(0.8);
           // Clamp out
         }
-        if (gamepad2.b == true) {
+        if (gamepad2.x == true) {
           LeftFoundation.setPosition(0.06);
           RightFoundation.setPosition(0.9);
           // Down
