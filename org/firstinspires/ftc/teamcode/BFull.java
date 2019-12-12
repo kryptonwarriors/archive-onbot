@@ -177,7 +177,7 @@ public class BFull extends LinearOpMode {
       LeftClamp.setPosition(0.3);
       RightClamp.setPosition(0.8);
       sleep(500);
-      Encoder_Function(BACKWARD, 800, 0.7);
+      Encoder_Function(BACKWARD, 1000, 0.7);
       
       //TODO: Go To Foundation and Drop the Skystone 
       Encoder_Function(LEFT, 4500 + Math.abs(LeftForward.getCurrentPosition()), 0.8);
@@ -218,19 +218,19 @@ public class BFull extends LinearOpMode {
       RightCascade.setPower(0);
       LeftCascade.setPower(0);
       LinearEncoder_Function(RETRACT, 1500, 0.7);
-      Encoder_Function(LTurn, 2700, 0.6);
-      Encoder_Function(BACKWARD, 500, 0.6);
+      Encoder_Function(LTurn, 2700, 0.7);
+      Encoder_Function(BACKWARD, 700, 0.7);
       LeftFoundation.setPosition(0.06);
       RightFoundation.setPosition(0.9);
-      sleep(700);
+      sleep(1200);
       Encoder_Function(FORWARD, 2000, 0.7);
       LeftFoundation.setPosition(0.68);
       RightFoundation.setPosition(0.22);
       
       if(park == UP) {
-        Encoder_Function(LEFT, 1700, 0.6);
-        Encoder_Function(BACKWARD, 1500, 0.6);
-        Encoder_Function(LEFT, 1500, 0.6);
+        Encoder_Function(LEFT, 1700, 0.7);
+        Encoder_Function(BACKWARD, 1500, 0.7);
+        Encoder_Function(LEFT, 1500, 0.7);
       }
       else if (park == WALL) {
         Encoder_Function(LEFT, 3000, 0.7);
@@ -393,7 +393,7 @@ public class BFull extends LinearOpMode {
     }
     
     int CurrentPosition = LeftForward.getCurrentPosition();
-    while ((Math.abs(Math.abs(CurrentPosition) - Math.abs(TargetPosition)) > 15) && !(isStopRequested())) {
+    while ((Math.abs(Math.abs(CurrentPosition) - Math.abs(TargetPosition)) > 20) && !(isStopRequested())) {
         
         CurrentPosition = LeftForward.getCurrentPosition();
         
