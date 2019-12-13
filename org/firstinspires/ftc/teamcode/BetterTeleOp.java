@@ -115,7 +115,7 @@ public class BetterTeleOp extends LinearOpMode {
           RightClamp.setPosition(1);
           // Clamp in
         }
-        if (gamepad2.y == true) {
+        if (gamepad2.a == true) {
           LeftClamp.setPosition(0.3);
           RightClamp.setPosition(0.8);
           // Clamp out
@@ -125,9 +125,10 @@ public class BetterTeleOp extends LinearOpMode {
           RightFoundation.setPosition(0.9);
           // Down
         }
-        if (gamepad2.a == true) {
+        if (gamepad2.y == true) {
           LeftFoundation.setPosition(0.68);
           RightFoundation.setPosition(0.22);
+          
           // Up
         }
         LinearActuator.setPower(gamepad2.right_stick_y * -0.8);

@@ -176,7 +176,7 @@ public class BFull extends LinearOpMode {
       Encoder_Function(FORWARD, 800, 0.7);
       LeftClamp.setPosition(0.3);
       RightClamp.setPosition(0.8);
-      sleep(500);
+      sleep(10500);
       Encoder_Function(BACKWARD, 1000, 0.7);
       
       //TODO: Go To Foundation and Drop the Skystone 

@@ -5,24 +5,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
-
 @TeleOp(name = "TestServoPositions (Blocks to Java)", group = "")
 public class TestServoPositions extends LinearOpMode {
 
     private Servo LeftClamp;
     private Servo RightClamp;
     private DcMotor LinearActuator;
-    private DcMotor RightCascade;
-    private DcMotor LeftCascade;
     
 public void runOpMode() {
     
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
-    LinearActuator = hardwareMap.dcMotor.get("LinearActuator");
-    RightCascade = hardwareMap.dcMotor.get("RightCascade");
-    LeftCascade = hardwareMap.dcMotor.get("LeftCascade");
-
+    LinearActuator = hardwareMap.dcMotor.get("LinearActuator"); 
     waitForStart();
     
 if(opModeIsActive()) {
@@ -58,9 +52,8 @@ if(opModeIsActive()) {
           LinearActuator.setPower(0);
 
         }
-        RightCascade.setPower(gamepad2.left_stick_y * -0.4);
-        LeftCascade.setPower(gamepad2.left_stick_y * 0.4);
 
+        
         
     }
 }
