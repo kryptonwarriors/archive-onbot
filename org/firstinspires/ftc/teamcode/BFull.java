@@ -116,12 +116,13 @@ public class BFull extends LinearOpMode {
     // in the Camera Stream preview window on the Driver Station.
     tfodSkyStone.activate();
     
-    telemetry.addData(">", "Press Play to start");
-    telemetry.update();
     LeftFoundation.setPosition(0.68);
     RightFoundation.setPosition(0.22);
     LeftClamp.setPosition(0.3);
     RightClamp.setPosition(0.8);
+    telemetry.addData("Distance", BackDistance.getDistance(DistanceUnit.INCH));
+    telemetry.addData(">", "Press Play to start");
+    telemetry.update();
     waitForStart();
     
     if (opModeIsActive()) {
@@ -168,6 +169,8 @@ public class BFull extends LinearOpMode {
       LeftBack.setPower(0);
       RightBack.setPower(0);
       sleep(200);
+      
+      sleep (4000);
       
       LinearEncoder_Function(EXTEND, 1500, 0.7);
       LeftClamp.setPosition(0.1);
