@@ -127,11 +127,17 @@ public class BFull extends LinearOpMode {
     
     if (opModeIsActive()) {
       
+      LeftCascade.setPower(-0.2);
+      RightCascade.setPower(0.2);
+      sleep(100);
+      LeftCascade.setPower(0);
+      RightCascade.setPower(0);
+      
       runWithoutEncoders();
-      LeftForward.setPower(-0.8);
-      RightForward.setPower(0.8);
-      LeftBack.setPower(-0.8);
-      RightBack.setPower(0.8);
+      LeftForward.setPower(-0.7);
+      RightForward.setPower(0.7);
+      LeftBack.setPower(-0.7);
+      RightBack.setPower(0.7);
       
       double eyes = BackDistance.getDistance(DistanceUnit.INCH);
       
@@ -170,20 +176,27 @@ public class BFull extends LinearOpMode {
       RightBack.setPower(0);
       sleep(200);
       
-      sleep (4000);
+      int move = Math.abs(LeftForward.getCurrentPosition());
+      telemetry.addData("move", move);
+      telemetry.update();
       
-      LinearEncoder_Function(EXTEND, 1500, 0.7);
+      tfodSkyStone.deactivate();
+      vuforiaSkyStone.close();
+      tfodSkyStone.close();
+      
+      
+      LinearEncoder_Function(EXTEND, 900, 0.7);
       LeftClamp.setPosition(0.1);
       RightClamp.setPosition(1);
       sleep(400);
       Encoder_Function(FORWARD, 800, 0.7);
       LeftClamp.setPosition(0.3);
       RightClamp.setPosition(0.8);
-      sleep(10500);
+      sleep(1000);
       Encoder_Function(BACKWARD, 1000, 0.7);
       
       //TODO: Go To Foundation and Drop the Skystone 
-      Encoder_Function(LEFT, 4500 + Math.abs(LeftForward.getCurrentPosition()), 0.8);
+      Encoder_Function(LEFT, 4500 + move, 0.8);
       
       runWithoutEncoders();
       
@@ -210,21 +223,28 @@ public class BFull extends LinearOpMode {
       RightBack.setPower(0);
       sleep(1000);
       
-      LeftClamp.setPosition(0.1);
+      RightCascade.setPower(-0.5);
+      LeftCascade.setPower(0.5);
+      sleep(200);
+      RightCascade.setPower(0);
+      LeftCascade.setPower(0);
+      
+      LeftClamp.setPosition(0.1);             //drop stone
       RightClamp.setPosition(1);
       sleep(400);
       
       Encoder_Function(BACKWARD, 600, 0.7);
       RightCascade.setPower(-0.5);
       LeftCascade.setPower(0.5);
-      sleep(400);
+      sleep(200);
       RightCascade.setPower(0);
       LeftCascade.setPower(0);
       LinearEncoder_Function(RETRACT, 1500, 0.7);
       Encoder_Function(LTurn, 2700, 0.7);
+      Encoder_Function(LEFT, 500, 0.7);
       Encoder_Function(BACKWARD, 700, 0.7);
-      LeftFoundation.setPosition(0.06);
-      RightFoundation.setPosition(0.9);
+      LeftFoundation.setPosition(0);
+      RightFoundation.setPosition(0.93);
       sleep(1200);
       Encoder_Function(FORWARD, 2000, 0.7);
       LeftFoundation.setPosition(0.68);
@@ -239,9 +259,7 @@ public class BFull extends LinearOpMode {
         Encoder_Function(LEFT, 3000, 0.7);
       }
       
-      tfodSkyStone.deactivate();
-      vuforiaSkyStone.close();
-      tfodSkyStone.close();
+      
       
     }
   }

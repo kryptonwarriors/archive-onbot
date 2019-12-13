@@ -70,30 +70,11 @@ public class BFoundation extends LinearOpMode {
     
     if (opModeIsActive()) {
       
-      Encoder_Function(LEFT, 700, 0.6);
-      
-      runWithoutEncoders();
-      LeftForward.setPower(-0.3);        //forward to foundation
-      RightForward.setPower(0.3);
-      LeftBack.setPower(-0.3);
-      RightBack.setPower(0.3);
-      
-      while (!(LFBumper.isPressed() || RFBumper.isPressed())) {
-          telemetry.addData("Digital Touch", "Is Not Pressed");
-          telemetry.update();
-        } 
-      
-      LeftForward.setPower(0);
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      RightBack.setPower(0);
+      Encoder_Function(RIGHT, 700, 0.6);
+      Encoder_Function(BACKWARD, 2200, 0.7);
+      LeftFoundation.setPosition(0);
+      RightFoundation.setPosition(0.93);
       sleep(1000);
-      
-      Encoder_Function(BACKWARD, 600, 0.6);
-      Encoder_Function(LTurn, 1000, 0.6);
-      Encoder_Function(FORWARD, 300, 0.6);
-      LeftFoundation.setPosition(0.06);
-      RightFoundation.setPosition(0.9);
       Encoder_Function(BACKWARD, 2000, 0.7);
       LeftFoundation.setPosition(0.68);
       RightFoundation.setPosition(0.22);

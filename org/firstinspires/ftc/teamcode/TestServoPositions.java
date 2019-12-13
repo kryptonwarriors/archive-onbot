@@ -16,8 +16,7 @@ public void runOpMode() {
     
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
-    LinearActuator = hardwareMap.dcMotor.get("LinearActuator"); 
-    waitForStart();
+    LinearActuator = hardwareMap.dcMotor.get("LinearActuator");waitForStart();
     
 if(opModeIsActive()) {
     while(opModeIsActive()) {
