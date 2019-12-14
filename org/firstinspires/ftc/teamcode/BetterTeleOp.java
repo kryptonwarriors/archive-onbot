@@ -1,16 +1,6 @@
 package org.firstinspires.ftc.teamcode;
-// import com.varuns.house.Moni 
-// import com.g.o.a.t; 
-/** import com.amazing.robotics.team;
- * import com.Narmada.Aunty;
- * import org.Dhriti;
- * import com.Robot.Aman;
- * import com.Bala.Uncle;
- * import com.Muthreeee;
- * import com.Rehul;
- * import 
- * 
- **/
+// import Moni's Genius & IQ 
+// import GOAT 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;

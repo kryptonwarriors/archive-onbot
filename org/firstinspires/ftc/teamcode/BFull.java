@@ -134,8 +134,8 @@ public class BFull extends LinearOpMode {
       
       double eyes = BackDistance.getDistance(DistanceUnit.INCH);
       
-      //move until 15 inches from the alliance wall 
-      while (eyes < 15) {
+      //move until 13 inches from the alliance wall 
+      while (eyes < 13) {
         eyes = BackDistance.getDistance(DistanceUnit.INCH);
         telemetry.addData("> Distance ( INCH )", Double.parseDouble(JavaUtil.formatNumber(eyes, 2)));
         telemetry.update();
@@ -249,16 +249,23 @@ public class BFull extends LinearOpMode {
       sleep(700);
       LinearActuator.setPower(0);
       Encoder_Function(LTurn, 2700, 0.7);
-      Encoder_Function(RIGHT, 1200, 0.7);
+      Encoder_Function(RIGHT, 1100, 0.7);
       Encoder_Function(BACKWARD, 700, 0.7);
       LeftFoundation.setPosition(0);
       RightFoundation.setPosition(0.93);
       sleep(1000);
       
-      Encoder_Function(FORWARD, 1800, 0.7);
-      
+      Encoder_Function(FORWARD, 800, 0.5);
+      Encoder_Function(FORWARD, 1000, 0.7);
+      Encoder_Function(LTurn, 500, 0.7);
       LeftFoundation.setPosition(0.68);
       RightFoundation.setPosition(0.22);
+      
+      sleep(300);
+      
+      Encoder_Function(RTurn, 500, 0.7);
+      
+      
       
       if(park == UP) {
         Encoder_Function(LEFT, 1800, 0.7);
