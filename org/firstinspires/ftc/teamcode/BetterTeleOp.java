@@ -1,5 +1,16 @@
 package org.firstinspires.ftc.teamcode;
-
+// import com.varuns.house.Moni 
+// import com.g.o.a.t; 
+/** import com.amazing.robotics.team;
+ * import com.Narmada.Aunty;
+ * import org.Dhriti;
+ * import com.Robot.Aman;
+ * import com.Bala.Uncle;
+ * import com.Muthreeee;
+ * import com.Rehul;
+ * import 
+ * 
+ **/
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -125,12 +136,12 @@ public class BetterTeleOp extends LinearOpMode {
           LeftBack.setPower(-1);
           RightBack.setPower(-1);
         }
-        if (gamepad2.b == true) {
+        if (gamepad2.a == true) {
           LeftClamp.setPosition(1);
           RightClamp.setPosition(0.8);
           // Clamp in
         }
-        if (gamepad2.a == true) {
+        if (gamepad2.b == true) {
           LeftClamp.setPosition(0.8);
           RightClamp.setPosition(1);
           // Clamp out
@@ -153,10 +164,16 @@ public class BetterTeleOp extends LinearOpMode {
           LeftCascade.setPower(0);
           RightCascade.setPower(0);
         }
+        if (gamepad2.right_bumper == true) {
+          LeftClamp.setPosition(1);
+          RightClamp.setPosition(0.6);
+          
+          
+        }
         //  RUN WITHOUT ENCODERS FOR ALL OTHER.
           LeftCascade.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
           RightCascade.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+ 
         LinearActuator.setPower(gamepad2.right_stick_y * -0.8);
         RightCascade.setPower(gamepad2.left_stick_y * -0.4);
         LeftCascade.setPower(gamepad2.left_stick_y * 0.5);

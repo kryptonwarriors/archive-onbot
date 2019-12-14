@@ -20,8 +20,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaSkyStone;
 import org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone;
 import java.util.List;
 
-@Autonomous(name = "BFull (Blocks to Java)", group = "")
-public class BFull extends LinearOpMode {
+@Autonomous(name = "RFull (Blocks to Java)", group = "")
+public class RFull extends LinearOpMode {
 
   private DcMotor LeftForward;
   private DcMotor LeftBack;
@@ -147,7 +147,7 @@ public class BFull extends LinearOpMode {
       RightBack.setPower(0);
       sleep(200);
       
-      Encoder_Function(LEFT, 900, 0.6);
+      Encoder_Function(RIGHT, 900, 0.6);
       
       LeftForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       RightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -155,10 +155,10 @@ public class BFull extends LinearOpMode {
       RightForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       runWithoutEncoders();
       
-      LeftForward.setPower(-0.2);     //strafe right to find skystone
-      RightForward.setPower(-0.2);
-      LeftBack.setPower(0.2);
-      RightBack.setPower(0.2);
+      LeftForward.setPower(0.2);     //strafe left to find skystone
+      RightForward.setPower(0.2);
+      LeftBack.setPower(-0.2);
+      RightBack.setPower(-0.2);
       
       SkystoneCenter = 1000;
       DetectSkystone(SkystoneCenter);
@@ -198,7 +198,7 @@ public class BFull extends LinearOpMode {
       Encoder_Function(BACKWARD, 1200, 0.7);
       
       //TODO: Go To Foundation and Drop the Skystone 
-      Encoder_Function(LEFT, 4100 + move, 0.8);
+      Encoder_Function(RIGHT, 4100 + move, 0.8);
       
       LeftForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       runWithoutEncoders();
@@ -248,8 +248,8 @@ public class BFull extends LinearOpMode {
       LinearActuator.setPower(-0.6);
       sleep(700);
       LinearActuator.setPower(0);
-      Encoder_Function(LTurn, 2700, 0.7);
-      Encoder_Function(RIGHT, 1200, 0.7);
+      Encoder_Function(RTurn, 2700, 0.7);
+      Encoder_Function(LEFT, 1200, 0.7);
       Encoder_Function(BACKWARD, 700, 0.7);
       LeftFoundation.setPosition(0);
       RightFoundation.setPosition(0.93);
@@ -261,12 +261,12 @@ public class BFull extends LinearOpMode {
       RightFoundation.setPosition(0.22);
       
       if(park == UP) {
-        Encoder_Function(LEFT, 1800, 0.7);
+        Encoder_Function(RIGHT, 1900, 0.7);
         Encoder_Function(BACKWARD, 1300, 0.7);
-        Encoder_Function(LEFT, 1700, 0.7);
+        Encoder_Function(RIGHT, 1800, 0.7);
       }
       else if (park == WALL) {
-        Encoder_Function(LEFT, 3300, 0.7);
+        Encoder_Function(RIGHT, 3300, 0.7);
       }
       
       /*tfodSkyStone.deactivate();
@@ -279,7 +279,7 @@ public class BFull extends LinearOpMode {
   
   private void DetectSkystone(double SkystoneCenter) {
     
-    while (SkystoneCenter > 290 && opModeIsActive()) {
+    while (SkystoneCenter < 290 && opModeIsActive()) {
       List<Recognition> recognitions = tfodSkyStone.getRecognitions();
       if (recognitions.size() == 0) {
         telemetry.addData("TFOD", "No items detected.");
