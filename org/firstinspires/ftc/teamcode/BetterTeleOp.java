@@ -131,7 +131,7 @@ public class BetterTeleOp extends LinearOpMode {
           // Clamp in
         }
         if (gamepad2.a == true) {
-          LeftClamp.setPosition(0.7);
+          LeftClamp.setPosition(0.8);
           RightClamp.setPosition(1);
           // Clamp out
         }

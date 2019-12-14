@@ -55,6 +55,9 @@ public class BFull extends LinearOpMode {
   int LTurn = 7;
   int EXTEND = 8;
   int RETRACT = 9;
+  int THRESH = 15;
+  int ALL_THRESH = 15;
+  int TURNTHRESH = 30;
   
   /**
    * This function is executed when this Op Mode is selected from the Driver Station.
@@ -117,11 +120,11 @@ public class BFull extends LinearOpMode {
     
     if (opModeIsActive()) {
       
-      LeftCascade.setPower(-0.2);
+      /*LeftCascade.setPower(-0.2);
       RightCascade.setPower(0.2);
       sleep(100);
       LeftCascade.setPower(0);
-      RightCascade.setPower(0);
+      RightCascade.setPower(0);*/
       
       runWithoutEncoders();
       LeftForward.setPower(-0.7);
@@ -176,22 +179,28 @@ public class BFull extends LinearOpMode {
       
       
       
-      Encoder_Function(FORWARD, 800, 0.7);
-      LeftClamp.setPosition(0.7);
+      Encoder_Function(FORWARD, 700, 0.5);
+      LeftClamp.setPosition(0.8);
       RightClamp.setPosition(1);
       sleep(600);
       runWithoutEncoders();
-      LinearActuator.setPower(0.6);
-      sleep(500);
+      LinearActuator.setPower(0.4);
+      sleep(800);
       LinearActuator.setPower(0);
       LeftClamp.setPosition(1);
-      RightClamp.setPosition(0.8);
+      RightClamp.setPosition(0.7);
       sleep(1000);
+      LeftCascade.setPower(-0.2);
+      RightCascade.setPower(0.15);
+      sleep(300);
+      LeftCascade.setPower(0);
+      RightCascade.setPower(0);
       Encoder_Function(BACKWARD, 1200, 0.7);
       
       //TODO: Go To Foundation and Drop the Skystone 
-      Encoder_Function(LEFT, 4500 + move, 0.8);
+      Encoder_Function(LEFT, 4000 + move, 0.8);
       
+      LeftForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       runWithoutEncoders();
       
       RightCascade.setPower(0.5);
@@ -200,14 +209,14 @@ public class BFull extends LinearOpMode {
       RightCascade.setPower(0);
       LeftCascade.setPower(0);
       
-      
       LeftForward.setPower(-0.3);        //forward to foundation
       RightForward.setPower(0.3);
       LeftBack.setPower(-0.3);
       RightBack.setPower(0.3);
       
-      while (!(LFBumper.isPressed() || RFBumper.isPressed())) {
+      while (!(LFBumper.isPressed() || RFBumper.isPressed() || Math.abs(LeftForward.getCurrentPosition()) > 1600)) {
           telemetry.addData("Digital Touch", "Is Not Pressed");
+          telemetry.addData("LeftForward current position", LeftForward.getCurrentPosition());
           telemetry.update();
         } 
       
@@ -215,7 +224,6 @@ public class BFull extends LinearOpMode {
       RightForward.setPower(0);
       LeftBack.setPower(0);
       RightBack.setPower(0);
-      sleep(1000);
       
       RightCascade.setPower(-0.4);
       LeftCascade.setPower(0.4);
@@ -223,26 +231,32 @@ public class BFull extends LinearOpMode {
       RightCascade.setPower(0);
       LeftCascade.setPower(0);
       
-      LeftClamp.setPosition(0.7);
+      LinearActuator.setPower(0.4);
+      sleep(500);
+      LinearActuator.setPower(0);
+      
+      LeftClamp.setPosition(0.8);       //drop skystone
       RightClamp.setPosition(1);
       sleep(400);
       
       Encoder_Function(BACKWARD, 600, 0.7);
       RightCascade.setPower(-0.4);
       LeftCascade.setPower(0.4);
-      sleep(200);
+      sleep(300);
       RightCascade.setPower(0);
       LeftCascade.setPower(0);
-      LinearActuator.setPower(0.6);
-      sleep(400);
+      LinearActuator.setPower(-0.6);
+      sleep(700);
       LinearActuator.setPower(0);
       Encoder_Function(LTurn, 2700, 0.7);
-      Encoder_Function(LEFT, 500, 0.7);
+      Encoder_Function(RIGHT, 900, 0.7);
       Encoder_Function(BACKWARD, 700, 0.7);
       LeftFoundation.setPosition(0);
       RightFoundation.setPosition(0.93);
-      sleep(1200);
-      Encoder_Function(FORWARD, 2000, 0.7);
+      sleep(1000);
+      
+      Encoder_Function(FORWARD, 1800, 0.7);
+      
       LeftFoundation.setPosition(0.68);
       RightFoundation.setPosition(0.22);
       
@@ -265,7 +279,7 @@ public class BFull extends LinearOpMode {
   
   private void DetectSkystone(double SkystoneCenter) {
     
-    while (SkystoneCenter > 300 && opModeIsActive()) {
+    while (SkystoneCenter > 290 && opModeIsActive()) {
       List<Recognition> recognitions = tfodSkyStone.getRecognitions();
       if (recognitions.size() == 0) {
         telemetry.addData("TFOD", "No items detected.");
@@ -324,8 +338,9 @@ public class BFull extends LinearOpMode {
     RightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     LeftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     RightForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    
+    THRESH = ALL_THRESH;
     if (Direction == FORWARD) {
+      
       LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -383,6 +398,7 @@ public class BFull extends LinearOpMode {
       RightBack.setPower(Power);
     }
     else if (Direction == RTurn) {
+      THRESH = TURNTHRESH;
       LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -397,6 +413,7 @@ public class BFull extends LinearOpMode {
       RightBack.setPower(-Power);
     }
     else if (Direction == LTurn) {
+      THRESH = TURNTHRESH;
       LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -412,7 +429,7 @@ public class BFull extends LinearOpMode {
     }
     
     int CurrentPosition = LeftForward.getCurrentPosition();
-    while ((Math.abs(Math.abs(CurrentPosition) - Math.abs(TargetPosition)) > 20) && !(isStopRequested())) {
+    while ((Math.abs(Math.abs(CurrentPosition) - Math.abs(TargetPosition)) > THRESH) && !(isStopRequested())) {
         
         CurrentPosition = LeftForward.getCurrentPosition();
         
