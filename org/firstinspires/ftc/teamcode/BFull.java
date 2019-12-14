@@ -84,19 +84,9 @@ public class BFull extends LinearOpMode {
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
 
-    // Sample TFOD Op Mode
-    // Initialize Vuforia.
-    /*LeftForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-    RightForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-    LeftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-    RightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-    LeftForward.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    RightForward.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    LeftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    RightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-   */
+    
     vuforiaSkyStone.initialize(
-        "", // vuforiaLicenseKey
+        "Aep6rHH/////AAABme4+LfHFHUG+rWg5ePEH2PhmJqjgZILzDPD4pxfckKin9iIq+waMwELsjAS6l/M0nM3U1uaktfb3oAx9njXP/KlwvaExjQcQxkFil6zbo6X4uTwvwTjLgZRuBOdcc9XlBtZwsi9x4XHMQRm/29dqHdj6vQFeEhcSkd5L+UePPjnrRULYSWkKz7tatdLmMTSm70s7A7Eii4T+7evwoLwXnkvhGSo3x5gp5LaMWPFuVZsxWnazqB1zXFY2XjASeSk9bXiZsd/knmpqz7IsmuO0oaYczP+2AgB8M+GLizjcaPAXw/u/eziOjsQC1C/ZeOkOqH1wvjFX2jHPM7+l+i4sM/riBT1yMpqoB7h5zf6HLRQN", // vuforiaLicenseKey
         hardwareMap.get(WebcamName.class, "Webcam 1"), // cameraName
         "", // webcamCalibrationFilename
         true, // useExtendedTracking
@@ -118,7 +108,7 @@ public class BFull extends LinearOpMode {
     
     LeftFoundation.setPosition(0.68);
     RightFoundation.setPosition(0.22);
-    LeftClamp.setPosition(0.3);
+    LeftClamp.setPosition(1);
     RightClamp.setPosition(0.8);
     telemetry.addData("Distance", BackDistance.getDistance(DistanceUnit.INCH));
     telemetry.addData(">", "Press Play to start");
@@ -185,15 +175,19 @@ public class BFull extends LinearOpMode {
       tfodSkyStone.close();
       
       
-      LinearEncoder_Function(EXTEND, 900, 0.7);
-      LeftClamp.setPosition(0.1);
-      RightClamp.setPosition(1);
-      sleep(400);
+      
       Encoder_Function(FORWARD, 800, 0.7);
-      LeftClamp.setPosition(0.3);
+      LeftClamp.setPosition(0.7);
+      RightClamp.setPosition(1);
+      sleep(600);
+      runWithoutEncoders();
+      LinearActuator.setPower(0.6);
+      sleep(500);
+      LinearActuator.setPower(0);
+      LeftClamp.setPosition(1);
       RightClamp.setPosition(0.8);
       sleep(1000);
-      Encoder_Function(BACKWARD, 1000, 0.7);
+      Encoder_Function(BACKWARD, 1200, 0.7);
       
       //TODO: Go To Foundation and Drop the Skystone 
       Encoder_Function(LEFT, 4500 + move, 0.8);
@@ -223,23 +217,25 @@ public class BFull extends LinearOpMode {
       RightBack.setPower(0);
       sleep(1000);
       
-      RightCascade.setPower(-0.5);
-      LeftCascade.setPower(0.5);
+      RightCascade.setPower(-0.4);
+      LeftCascade.setPower(0.4);
       sleep(200);
       RightCascade.setPower(0);
       LeftCascade.setPower(0);
       
-      LeftClamp.setPosition(0.1);             //drop stone
+      LeftClamp.setPosition(0.7);
       RightClamp.setPosition(1);
       sleep(400);
       
       Encoder_Function(BACKWARD, 600, 0.7);
-      RightCascade.setPower(-0.5);
-      LeftCascade.setPower(0.5);
+      RightCascade.setPower(-0.4);
+      LeftCascade.setPower(0.4);
       sleep(200);
       RightCascade.setPower(0);
       LeftCascade.setPower(0);
-      LinearEncoder_Function(RETRACT, 1500, 0.7);
+      LinearActuator.setPower(0.6);
+      sleep(400);
+      LinearActuator.setPower(0);
       Encoder_Function(LTurn, 2700, 0.7);
       Encoder_Function(LEFT, 500, 0.7);
       Encoder_Function(BACKWARD, 700, 0.7);
@@ -259,7 +255,9 @@ public class BFull extends LinearOpMode {
         Encoder_Function(LEFT, 3000, 0.7);
       }
       
-      
+      /*tfodSkyStone.deactivate();
+      vuforiaSkyStone.close();
+      tfodSkyStone.close();*/
       
     }
   }
@@ -457,7 +455,7 @@ public class BFull extends LinearOpMode {
         
         CurrentPosition = LinearActuator.getCurrentPosition();
         
-        telemetry.addData("key", "moving");
+        telemetry.addData("key", "Linear Actuator is being stupid");
         telemetry.addData("CurrentPosition", CurrentPosition);
         telemetry.addData("TargetPosition", TargetPosition);
         telemetry.update();

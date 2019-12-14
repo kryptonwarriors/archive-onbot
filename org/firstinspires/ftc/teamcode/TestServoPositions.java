@@ -23,22 +23,22 @@ if(opModeIsActive()) {
     
     if (gamepad2.y == true) {
           LeftClamp.setPosition(0.7);
-          //RightClamp.setPosition(0.6);
+          RightClamp.setPosition(1);
           // Clamp in
         }
         if (gamepad2.b == true) {
-          LeftClamp.setPosition(0.5);
-          //RightClamp.setPosition(0.7);
-          // Clamp out
-        }
-        if (gamepad2.a == true) {
-          LeftClamp.setPosition(0.3);
+          LeftClamp.setPosition(1);
           RightClamp.setPosition(0.8);
           // Clamp out
         }
+        if (gamepad2.a == true) {
+          LeftClamp.setPosition(0.9);
+          //RightClamp.setPosition(0.9);
+          // Clamp out
+        }
         if (gamepad2.x == true) {
-          LeftClamp.setPosition(0.1);
-          RightClamp.setPosition(1);
+          LeftClamp.setPosition(1);
+          //RightClamp.setPosition(1);
           // Clamp out
         }
         if (gamepad2.left_bumper){
