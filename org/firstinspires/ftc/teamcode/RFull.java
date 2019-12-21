@@ -192,7 +192,7 @@ public class RFull extends LinearOpMode {
       sleep(300);
       LeftCascade.setPower(0);
       RightCascade.setPower(0);
-      Encoder_Function(BACKWARD, 1200, 0.7);
+      Encoder_Function(BACKWARD, 800, 0.7);
       
       //TODO: Go To Foundation and Drop the Skystone 
       Encoder_Function(RIGHT, 4100 + move, 0.8);
@@ -281,7 +281,7 @@ public class RFull extends LinearOpMode {
   
   private void DetectSkystone(double SkystoneCenter) {
     
-    while (SkystoneCenter < 350 && opModeIsActive()) {
+    while (SkystoneCenter < 290 && opModeIsActive() || Math.abs(LeftForward.getCurrentPosition()) < 2200) {
       List<Recognition> recognitions = tfodSkyStone.getRecognitions();
       if (recognitions.size() == 0) {
         telemetry.addData("TFOD", "No items detected.");
