@@ -13,13 +13,7 @@ public class BetterTeleOp extends LinearOpMode {
   private DcMotor RightBack;
   private DcMotor LeftForward;
   private DcMotor LeftBack;
-  private Servo LeftClamp;
-  private Servo RightClamp;
-  private Servo LeftFoundation;
-  private Servo RightFoundation;
-  private DcMotor LinearActuator;
-  private DcMotor RightCascade;
-  private DcMotor LeftCascade;
+
 
   /**
    * This function is executed when this Op Mode is selected from the Driver Station.
@@ -30,13 +24,6 @@ public class BetterTeleOp extends LinearOpMode {
     RightBack = hardwareMap.dcMotor.get("RightBack");
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     LeftBack = hardwareMap.dcMotor.get("LeftBack");
-    LeftClamp = hardwareMap.servo.get("LeftClamp");
-    RightClamp = hardwareMap.servo.get("RightClamp");
-    LeftFoundation = hardwareMap.servo.get("LeftFoundation");
-    RightFoundation = hardwareMap.servo.get("RightFoundation");
-    LinearActuator = hardwareMap.dcMotor.get("LinearActuator");
-    RightCascade = hardwareMap.dcMotor.get("RightCascade");
-    LeftCascade = hardwareMap.dcMotor.get("LeftCascade");
 
     RightForward.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     RightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -52,9 +39,9 @@ public class BetterTeleOp extends LinearOpMode {
     if (opModeIsActive()) {
       while (opModeIsActive()) {
         LeftBack.setPower(2 * gamepad1.left_stick_y);
-        RightBack.setPower(-2 * gamepad1.right_stick_y);
+        RightBack.setPower(2 * gamepad1.right_stick_y);
         LeftForward.setPower(2 * gamepad1.left_stick_y);
-        RightForward.setPower(-2 * gamepad1.right_stick_y);
+        RightForward.setPower(2 * gamepad1.right_stick_y);
         telemetry.addData("RightForward", RightForward.getPower());
         telemetry.addData("LeftForward", LeftForward.getPower());
         telemetry.addData("RightBack", RightBack.getPower());
@@ -127,46 +114,46 @@ public class BetterTeleOp extends LinearOpMode {
           RightBack.setPower(-1);
         }
         if (gamepad2.a == true) {
-          LeftClamp.setPosition(1);
-          RightClamp.setPosition(0.8);
+          //LeftClamp.setPosition(1);
+          // RightClamp.setPosition(0.8);
           // Clamp in
         }
         if (gamepad2.b == true) {
-          LeftClamp.setPosition(0.8);
-          RightClamp.setPosition(1);
+          //LeftClamp.setPosition(0.8);
+          //RightClamp.setPosition(1);
           // Clamp out
         }
         if (gamepad2.x == true) {
-          LeftFoundation.setPosition(0);
-          RightFoundation.setPosition(1);
+          //LeftFoundation.setPosition(0);
+          // RightFoundation.setPosition(1);
           // Down
         }
         if (gamepad2.y == true) {
-          LeftFoundation.setPosition(0.68);
-          RightFoundation.setPosition(0.22);
+          //LeftFoundation.setPosition(0.68);
+          //RightFoundation.setPosition(0.22);
 
           // Up
         }
         if (gamepad2.left_bumper == true) {
-          LeftCascade.setPower(-0.2);
-          RightCascade.setPower(0.2);
-          sleep(100);
-          LeftCascade.setPower(0);
-          RightCascade.setPower(0);
+          //LeftCascade.setPower(-0.2);
+          //for nRightCascade.setPower(0.2);
+          //sleep(100);
+          //LeftCascade.setPower(0);
+          //RightCascade.setPower(0);
         }
         if (gamepad2.right_bumper == true) {
-          LeftClamp.setPosition(1);
-          RightClamp.setPosition(0.6);
+          //LeftClamp.setPosition(1);
+          //RightClamp.setPosition(0.6);
           
           
         }
         //  RUN WITHOUT ENCODERS FOR ALL OTHER.
-          LeftCascade.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-          RightCascade.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+          //LeftCascade.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+          //RightCascade.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
  
-        LinearActuator.setPower(gamepad2.right_stick_y * -0.8);
-        RightCascade.setPower(gamepad2.left_stick_y * -0.4);
-        LeftCascade.setPower(gamepad2.left_stick_y * 0.5);
+        //LinearActuator.setPower(gamepad2.right_stick_y * -0.8);
+        //RightCascade.setPower(gamepad2.left_stick_y * -0.4);
+        //LeftCascade.setPower(gamepad2.left_stick_y * 0.5);
       }
     }
   }
