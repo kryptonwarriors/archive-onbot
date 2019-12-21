@@ -48,9 +48,9 @@ public class BetterTeleOp extends LinearOpMode {
         telemetry.addData("LeftBack", LeftBack.getPower());
         telemetry.update();
         // Strafing to the Left
-        LeftForward.setPower(-2 * gamepad1.right_trigger);
+        LeftForward.setPower(2 * gamepad1.right_trigger);
         LeftBack.setPower(2 * gamepad1.right_trigger);
-        RightForward.setPower(-2 * gamepad1.right_trigger);
+        RightForward.setPower(2 * gamepad1.right_trigger);
         RightBack.setPower(2 * gamepad1.right_trigger);
         // Strafing to the Right
         LeftForward.setPower(2 * gamepad1.left_trigger);
@@ -110,7 +110,7 @@ public class BetterTeleOp extends LinearOpMode {
         } else if (gamepad1.right_bumper == true) {
           LeftForward.setPower(-1);
           RightForward.setPower(-1);
-          LeftBack.setPower(-1);
+          LeftBack.setPower(-1);  
           RightBack.setPower(-1);
         }
         if (gamepad2.a == true) {
