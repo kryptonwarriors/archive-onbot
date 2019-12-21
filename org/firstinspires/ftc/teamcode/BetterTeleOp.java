@@ -38,9 +38,9 @@ public class BetterTeleOp extends LinearOpMode {
     waitForStart();
     if (opModeIsActive()) {
       while (opModeIsActive()) {
-        LeftBack.setPower(2 * gamepad1.left_stick_y);
+        LeftBack.setPower(-2 * gamepad1.left_stick_y);
         RightBack.setPower(2 * gamepad1.right_stick_y);
-        LeftForward.setPower(2 * gamepad1.left_stick_y);
+        LeftForward.setPower(-2 * gamepad1.left_stick_y);
         RightForward.setPower(2 * gamepad1.right_stick_y);
         telemetry.addData("RightForward", RightForward.getPower());
         telemetry.addData("LeftForward", LeftForward.getPower());
