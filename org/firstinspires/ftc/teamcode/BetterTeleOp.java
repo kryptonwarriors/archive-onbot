@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 // import GOAT || AMAN
 //import com.qualcomm.robotcore.brain.Moni;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
