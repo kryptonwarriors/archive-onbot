@@ -24,6 +24,7 @@ public class BetterTeleOp extends LinearOpMode {
     RightBack = hardwareMap.dcMotor.get("RightBack");
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     LeftBack = hardwareMap.dcMotor.get("LeftBack");
+    
 
     RightForward.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     RightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -38,7 +39,7 @@ public class BetterTeleOp extends LinearOpMode {
     waitForStart();
     if (opModeIsActive()) {
       while (opModeIsActive()) {
-        LeftBack.setPower(-2 * gamepad1.left_stick_y);
+        LeftBack.setPower(2 * gamepad1.left_stick_y);
         RightBack.setPower(2 * gamepad1.right_stick_y);
         LeftForward.setPower(-2 * gamepad1.left_stick_y);
         RightForward.setPower(2 * gamepad1.right_stick_y);
