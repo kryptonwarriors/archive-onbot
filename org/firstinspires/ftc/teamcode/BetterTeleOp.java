@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
-// import Moni's Genius & IQ 
-// import GOAT 
+// import Rahuls's Genius & IQ
+// import GOAT || AMAN
+//import com.qualcomm.robotcore.brain.Moni;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,8 +14,7 @@ public class BetterTeleOp extends LinearOpMode {
   private DcMotor RightBack;
   private DcMotor LeftForward;
   private DcMotor LeftBack;
-
-
+  private double Multiplier = 2;
   /**
    * This function is executed when this Op Mode is selected from the Driver Station.
    */
@@ -24,12 +24,16 @@ public class BetterTeleOp extends LinearOpMode {
     RightBack = hardwareMap.dcMotor.get("RightBack");
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     LeftBack = hardwareMap.dcMotor.get("LeftBack");
-    
+
 
     RightForward.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     RightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     LeftForward.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     LeftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+    RightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+    LeftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+
     RightForward.setPower(0);
     RightBack.setPower(0);
     LeftForward.setPower(0);
@@ -39,10 +43,10 @@ public class BetterTeleOp extends LinearOpMode {
     waitForStart();
     if (opModeIsActive()) {
       while (opModeIsActive()) {
-        LeftBack.setPower(2 * gamepad1.left_stick_y);
-        RightBack.setPower(2 * gamepad1.right_stick_y);
-        LeftForward.setPower(-2 * gamepad1.left_stick_y);
-        RightForward.setPower(2 * gamepad1.right_stick_y);
+        LeftBack.setPower(-Multiplier * gamepad1.left_stick_y);
+        RightBack.setPower(Multiplier * gamepad1.right_stick_y);
+        LeftForward.setPower(-Multiplier * gamepad1.left_stick_y);
+        RightForward.setPower(Multiplier * gamepad1.right_stick_y);
         telemetry.addData("RightForward", RightForward.getPower());
         telemetry.addData("LeftForward", LeftForward.getPower());
         telemetry.addData("RightBack", RightBack.getPower());
@@ -63,7 +67,7 @@ public class BetterTeleOp extends LinearOpMode {
           LeftBack.setPower(-0.8);
           RightForward.setPower(0.8);
           RightBack.setPower(0.8);
-          telemetry.addData("RightForward", RightForward.getPower());
+        telemetry.addData("RightForward", RightForward.getPower());
         telemetry.addData("LeftForward", LeftForward.getPower());
         telemetry.addData("RightBack", RightBack.getPower());
         telemetry.addData("LeftBack", LeftBack.getPower());
@@ -111,7 +115,7 @@ public class BetterTeleOp extends LinearOpMode {
         } else if (gamepad1.right_bumper == true) {
           LeftForward.setPower(-1);
           RightForward.setPower(-1);
-          LeftBack.setPower(-1);  
+          LeftBack.setPower(-1);
           RightBack.setPower(-1);
         }
         if (gamepad2.a == true) {
@@ -145,13 +149,13 @@ public class BetterTeleOp extends LinearOpMode {
         if (gamepad2.right_bumper == true) {
           //LeftClamp.setPosition(1);
           //RightClamp.setPosition(0.6);
-          
-          
+
+
         }
         //  RUN WITHOUT ENCODERS FOR ALL OTHER.
           //LeftCascade.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
           //RightCascade.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
- 
+
         //LinearActuator.setPower(gamepad2.right_stick_y * -0.8);
         //RightCascade.setPower(gamepad2.left_stick_y * -0.4);
         //LeftCascade.setPower(gamepad2.left_stick_y * 0.5);
