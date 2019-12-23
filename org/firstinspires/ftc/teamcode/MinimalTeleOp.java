@@ -44,18 +44,30 @@ public class MinimalTeleOp extends LinearOpMode {
     if (opModeIsActive()) {
       while (opModeIsActive()) {
 
-
-        RightBack.setPower(gamepad1.left_stick_y);
-        RightForward.setPower(gamepad1.left_stick_y);
-        LeftForward.setPower(gamepad1.left_stick_y);
-        LeftBack.setPower(gamepad1.left_stick_y);
+        RightBack.setPower(-gamepad1.left_stick_y);
+        RightForward.setPower(-gamepad1.left_stick_y);
+        LeftForward.setPower(-gamepad1.left_stick_y);
+        LeftBack.setPower(-gamepad1.left_stick_y);
 
         telemetry.addData("RightForward", RightForward.getPower());
         telemetry.addData("LeftForward", LeftForward.getPower());
         telemetry.addData("RightBack", RightBack.getPower());
         telemetry.addData("LeftBack", LeftBack.getPower());
         telemetry.update();
-
+        if(gamepad1.right_trigger > 0.01) {
+          // Strafing to the Left
+        LeftForward.setPower(gamepad1.right_trigger);
+        LeftBack.setPower(-gamepad1.right_trigger);
+        RightForward.setPower(gamepad1.right_trigger);
+        RightBack.setPower(-gamepad1.right_trigger);
+        }
+        if(gamepad1.left_trigger > 0.01) {
+        // Strafing to the Right
+        LeftForward.setPower(gamepad1.left_trigger);
+        LeftBack.setPower(gamepad1.left_trigger);
+        RightForward.setPower(-gamepad1.left_trigger);
+        RightBack.setPower(-gamepad1.left_trigger);
+        }
       }
     }
   }
