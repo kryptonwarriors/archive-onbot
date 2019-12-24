@@ -29,8 +29,6 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
 
-
-
 @Autonomous(name = "RightStrafePark", group = "")
 public class RightStrafePark extends LinearOpMode {
 
