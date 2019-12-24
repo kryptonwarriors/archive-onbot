@@ -69,15 +69,8 @@ public class RightStrafePark extends LinearOpMode {
     String TapeColor = "Null";
     double hue, colorHSV;
 
-    //double colorHSV = Color.argb(Color1.alpha(), Color1.red(), Color1.green(), Color1.blue());
-    // Get hue.
-    //double hue = JavaUtil.colorToHue(colorHSV);
-
-
-
     @Override
     public void runOpMode() {
-
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     RightForward = hardwareMap.dcMotor.get("RightForward");
     LeftBack = hardwareMap.dcMotor.get("LeftBack");
