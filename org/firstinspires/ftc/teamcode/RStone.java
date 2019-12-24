@@ -29,7 +29,7 @@ public class RStone extends LinearOpMode {
   private DcMotor RightForward;
   private DcMotor LinearActuator;
   private DcMotor LeftCascade;
-  private DcMotor RightCascade; 
+  private DcMotor RightCascade;
   private VuforiaSkyStone vuforiaSkyStone;
   private TfodSkyStone tfodSkyStone;
   private DistanceSensor BackDistance;
@@ -41,7 +41,7 @@ public class RStone extends LinearOpMode {
   private Servo RightClamp;
   private double eyes;
   private double boxRightEdge;
-  private double boxWidth; 
+  private double boxWidth;
   private double boxLeftEdge;
   private double SkystoneCenter; 
   int FORWARD = 0;

@@ -33,9 +33,6 @@ public class TheTeleOp extends LinearOpMode {
       return Output;
  }
 
-  /**
-   * This function is executed when this Op Mode is selected from the Driver Station.
-   */
   @Override
   public void runOpMode() {
 
@@ -47,6 +44,9 @@ public class TheTeleOp extends LinearOpMode {
     RightFoundation = hardwareMap.servo.get("RightFoundation");
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
+    RightCascade = hardwareMap.dcMotor.get("RightCascade");
+    LeftCascade = hardwareMap.dcMotor.get("LeftCascade");
+    LinearActuator = hardwareMap.dcMotor.get("LinearActuator");
 
 
     RightForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -117,13 +117,13 @@ public class TheTeleOp extends LinearOpMode {
           RightClamp.setPosition(0.8);
           // Clamp in
         }
-        if (gamepad2.b == true) {
+      if (gamepad2.b == true) {
           LeftClamp.setPosition(0.8);
           RightClamp.setPosition(1);
           // Clamp out
 
         }
-        if (gamepad2.x == true) {
+      if (gamepad2.x == true) {
           LeftFoundation.setPosition(0.28);
           RightFoundation.setPosition(0.72);
           // Down
