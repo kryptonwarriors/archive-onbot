@@ -13,17 +13,8 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name = "TheTeleOp", group = "")
 public class TheTeleOp extends LinearOpMode {
 
-  private DcMotor RightForward;
-  private DcMotor RightBack;
-  private DcMotor LeftForward;
-  private DcMotor LeftBack;
-  private Servo LeftClamp;
-  private Servo RightClamp;
-  private Servo LeftFoundation;
-  private Servo RightFoundation;
-  private DcMotor RightCascade;
-  private DcMotor LeftCascade;
-  private DcMotor LinearActuator;
+  private DcMotor RightForward, RightBack, LeftForward, LeftBack, RightCascade, LeftCascade, LinearActuator;
+  private Servo LeftClamp, RightClamp, LeftFoundation, RightFoundation;
   private ElapsedTime runtime = new ElapsedTime();
   private double Multiplier = 0.7;
   private double StrafeMultiplier = 0.8;
