@@ -31,7 +31,7 @@ import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
 
 
-@Autonomous(name = "RightStrafePark (Blocks to Java)", group = "")
+@Autonomous(name = "RightStrafePark", group = "")
 public class RightStrafePark extends LinearOpMode {
 
     private DistanceSensor BackDistance;
