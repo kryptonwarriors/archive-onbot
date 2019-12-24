@@ -11,16 +11,16 @@ public class TestServoPositions extends LinearOpMode {
     private Servo LeftClamp;
     private Servo RightClamp;
     private DcMotor LinearActuator;
-    
+
 public void runOpMode() {
-    
+
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
     LinearActuator = hardwareMap.dcMotor.get("LinearActuator");waitForStart();
-    
+
 if(opModeIsActive()) {
     while(opModeIsActive()) {
-    
+
     if (gamepad2.y == true) {
           LeftClamp.setPosition(0.7);
           RightClamp.setPosition(1);
@@ -43,7 +43,7 @@ if(opModeIsActive()) {
         }
         if (gamepad2.left_bumper){
           LinearActuator.setPower(-0.9);
-          
+
         } else if (gamepad2.right_bumper){
           LinearActuator.setPower(0.9);
 
@@ -51,9 +51,6 @@ if(opModeIsActive()) {
           LinearActuator.setPower(0);
 
         }
-
-        
-        
     }
 }
 
