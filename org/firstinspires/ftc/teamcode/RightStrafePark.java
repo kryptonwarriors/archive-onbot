@@ -23,11 +23,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaSkyStone;
 import org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone;
 import java.util.List;
+import android.graphics.Color;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
+
+
 
 
 @Autonomous(name = "RightStrafePark (Blocks to Java)", group = "")
 public class RightStrafePark extends LinearOpMode {
-  
+
     private DistanceSensor BackDistance;
     private Blinker Control_Hub;
     private Blinker Expansion_Hub;
@@ -47,6 +52,7 @@ public class RightStrafePark extends LinearOpMode {
     private HardwareDevice webcam_1;
     private Gyroscope imu_1;
     private Gyroscope imu;
+    private ColorSensor Color1;
     int FORWARD = 0;
     int BACKWARD = 1;
     int LEFT = 2;
@@ -61,10 +67,16 @@ public class RightStrafePark extends LinearOpMode {
     int THRESH = 15;
     int ALL_THRESH = 15;
     int TURNTHRESH = 30;
+    String TapeColor = "Null";
+    //double colorHSV = Color.argb(Color1.alpha(), Color1.red(), Color1.green(), Color1.blue());
+    // Get hue.
+    //double hue = JavaUtil.colorToHue(colorHSV);
+
+
 
     @Override
     public void runOpMode() {
-      
+
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     RightForward = hardwareMap.dcMotor.get("RightForward");
     LeftBack = hardwareMap.dcMotor.get("LeftBack");
@@ -79,145 +91,45 @@ public class RightStrafePark extends LinearOpMode {
     RightFoundation = hardwareMap.servo.get("RightFoundation");
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
-    
-    waitForStart();
-    
-    if (opModeIsActive()) {
-    
-    Encoder_Function(LEFT, 500, 0.5);
-      
-      
-      
-      
-      
+    Color1 = hardwareMap.colorSensor.get("Color1");
 
-            
-      
-      
-    }
-  }
-  private void Encoder_Function(int Direction, int TargetPosition, double Power) {
-    int FORWARD = 0;
-    int BACKWARD = 1;
-    int LEFT = 2;
-    int RIGHT = 3;
-    int RTurn = 6;
-    int LTurn = 7;
-    
-    LeftForward.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    RightForward.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    LeftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    RightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    LeftForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    RightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    LeftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    RightForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    THRESH = ALL_THRESH;
-    if (Direction == FORWARD) {
-      LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftForward.setTargetPosition(-TargetPosition);
-      LeftBack.setTargetPosition(-TargetPosition);
-      RightForward.setTargetPosition(TargetPosition);
-      RightBack.setTargetPosition(TargetPosition);
-      LeftBack.setPower(-Power);
-      LeftForward.setPower(-Power);
-      RightForward.setPower(Power);
-      RightBack.setPower(Power);
-    } 
-    else if (Direction == BACKWARD) {
-      LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftForward.setTargetPosition(TargetPosition);
-      LeftBack.setTargetPosition(TargetPosition);
-      RightForward.setTargetPosition(-TargetPosition);
-      RightBack.setTargetPosition(-TargetPosition);
-      LeftForward.setPower(Power);
-      LeftBack.setPower(Power);
-      RightBack.setPower(-Power);
-      RightForward.setPower(-Power);
-      
-    } else if (Direction == LEFT) {
-      LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftForward.setTargetPosition(TargetPosition);
-      LeftBack.setTargetPosition(-TargetPosition);
-      RightForward.setTargetPosition(TargetPosition);
-      RightBack.setTargetPosition(-TargetPosition);
-      LeftForward.setPower(Power);
-      LeftBack.setPower(-Power);
-      RightForward.setPower(Power);
-      RightBack.setPower(-Power);
-      
-    }
-    else if (Direction == RIGHT) {
-      THRESH = TURNTHRESH;
-      LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftForward.setTargetPosition(-TargetPosition);
-      LeftBack.setTargetPosition(TargetPosition);
-      RightForward.setTargetPosition(-TargetPosition);
-      RightBack.setTargetPosition(TargetPosition);
-      LeftForward.setPower(-Power);
-      LeftBack.setPower(Power);
-      RightForward.setPower(-Power);
-      RightBack.setPower(0.92*Power);
-    }
-    else if (Direction == RTurn) {
-      THRESH = TURNTHRESH;
-      LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftForward.setTargetPosition(-TargetPosition);
-      LeftBack.setTargetPosition(-TargetPosition);
-      RightForward.setTargetPosition(-TargetPosition);
-      RightBack.setTargetPosition(-TargetPosition);
-      LeftForward.setPower(-Power);
-      LeftBack.setPower(-Power);
-      RightForward.setPower(-Power);
-      RightBack.setPower(-Power);
-    }
-    else if (Direction == LTurn) {
-      THRESH = TURNTHRESH;
-      LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftForward.setTargetPosition(TargetPosition);
-      LeftBack.setTargetPosition(TargetPosition);
-      RightForward.setTargetPosition(TargetPosition);
-      RightBack.setTargetPosition(TargetPosition);
-      LeftForward.setPower(Power);
-      LeftBack.setPower(Power);
-      RightForward.setPower(Power);
-      RightBack.setPower(Power);
-    }
-    
-    int CurrentPosition = LeftForward.getCurrentPosition();
-    while ((Math.abs(Math.abs(CurrentPosition) - Math.abs(TargetPosition)) > THRESH) && !(isStopRequested())) {
-        
-        CurrentPosition = LeftForward.getCurrentPosition();
-        
-        telemetry.addData("key", "moving");
-        telemetry.addData("CurrentPosition", CurrentPosition);
-        telemetry.addData("TargetPosition", TargetPosition);
+
+    waitForStart();
+
+    if (opModeIsActive()) {
+      while (opModeIsActive()){
+        // Display distance info.
+        // Display reflected light.
+        // Convert RGB values to HSV color model.
+        // See https://en.wikipedia.org/wiki/HSL_and_HSV for details on HSV color model.
+        // Use hue to determine if it's red, green, blue, etc..
+        /*if (hue < 30) {
+          TapeColor = "Red";
+          telemetry.addData("Color", "Red");
+          telemetry.update();
+        } else if (hue < 225) {
+          TapeColor = "Blue";
+          telemetry.addData("Color", "Blue");
+          telemetry.update();
+        } else {
+          TapeColor = "Red";
+          telemetry.addData("Color", "Red");
+          telemetry.update();
+        }
+
+        while (TapeColor != "Red") {
+          RightForward.setPower(0.5);
+          RightBack.setPower(0.5);
+          LeftForward.setPower(-0.5);
+          LeftBack.setPower(-0.5);
+        }
+        RightForward.setPower(0);
+        RightBack.setPower(0);
+        LeftForward.setPower(0);
+        LeftBack.setPower(0);
         telemetry.update();
+      }*/
       }
-    
-    LeftForward.setPower(0);
-    RightForward.setPower(0);
-    LeftBack.setPower(0);
-    RightBack.setPower(0);
-    sleep(200);
-    
+    }
   }
 }
