@@ -6,11 +6,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "MinimalTeleOp", group = "")
 public class MinimalTeleOp extends LinearOpMode {
 
+  private ElapsedTime runtime = new ElapsedTime();
   private DcMotor RightForward;
   private DcMotor RightBack;
   private DcMotor LeftForward;
@@ -31,18 +34,43 @@ public class MinimalTeleOp extends LinearOpMode {
     LeftForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     LeftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+<<<<<<< HEAD
 
+=======
+   
+>>>>>>> 6ea5fea28b87ea626284521e761fb5a52eaa21ac
 
     RightForward.setPower(0);
     RightBack.setPower(0);
     LeftForward.setPower(0);
     LeftBack.setPower(0);
+
+    runtime.reset();
+
     telemetry.addData(">", "INIT DONE");
     telemetry.update();
     waitForStart();
     if (opModeIsActive()) {
       while (opModeIsActive()) {
+        if(gamepad1.x) {}
+        RightBack.setPower(0.8 * gamepad1.right_stick_y);
+        RightForward.setPower(0.8 * gamepad1.right_stick_y);
+        LeftForward.setPower(0.8 * gamepad1.left_stick_y);
+        LeftBack.setPower(0.8 * gamepad1.left_stick_y);
 
+        // Strafing to the Left
+         LeftForward.setPower(0.8 * gamepad1.left_trigger);
+         LeftBack.setPower(0.8 * gamepad1.left_trigger);
+         RightForward.setPower(0.8 * gamepad1.left_trigger);
+         RightBack.setPower(0.8 * gamepad1.left_trigger);
+
+         // Strafing to the Right
+         LeftForward.setPower(0.8 * gamepad1.right_trigger);
+         LeftBack.setPower(0.8 * gamepad1.right_trigger);
+         RightForward.setPower(-0.8 * gamepad1.right_trigger);
+         RightBack.setPower(-0.8 * gamepad1.right_trigger);
+
+<<<<<<< HEAD
         RightBack.setPower(0.8 * gamepad1.right_stick_y);
         RightForward.setPower(-0.8 * gamepad1.right_stick_y);
         LeftForward.setPower(-0.8 * gamepad1.left_stick_y);
@@ -59,7 +87,10 @@ public class MinimalTeleOp extends LinearOpMode {
          LeftBack.setPower(-0.8 * gamepad1.right_trigger);
          RightForward.setPower(0.8 * gamepad1.right_trigger);
          RightBack.setPower(0.8 * gamepad1.right_trigger);
+=======
+>>>>>>> 6ea5fea28b87ea626284521e761fb5a52eaa21ac
 
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("RightForward", RightForward.getPower());
         telemetry.addData("LeftForward", LeftForward.getPower());
         telemetry.addData("RightBack", RightBack.getPower());

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
-// import Rahuls's Genius & IQ
-// import GOAT || AMAN
+// import Rahuls's Genius & IQ;
+// import AMAN;
 //import com.qualcomm.robotcore.brain.Moni;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -19,7 +19,11 @@ public class BetterTeleOp extends LinearOpMode {
   private Servo RightFoundation;
   private Servo LeftClamp;
   private Servo RightClamp;
+<<<<<<< HEAD
   private double Multiplier = -2;
+=======
+  private double Multiplier = 0.65;
+>>>>>>> 6ea5fea28b87ea626284521e761fb5a52eaa21ac
   /**
    * This function is executed when this Op Mode is selected from the Driver Station.
    */
@@ -56,10 +60,20 @@ public class BetterTeleOp extends LinearOpMode {
     waitForStart();
     if (opModeIsActive()) {
       while (opModeIsActive()) {
+<<<<<<< HEAD
         LeftBack.setPower(2 * gamepad1.left_stick_y);
         RightBack.setPower(-2 * gamepad1.right_stick_y);
         LeftForward.setPower(-2 * gamepad1.left_stick_y);
         RightForward.setPower(2 * gamepad1.right_stick_y);
+=======
+        // Legs Function.
+        RightBack.setPower(Multiplier * -gamepad1.right_stick_y);
+        RightForward.setPower(Multiplier * -gamepad1.right_stick_y);
+        LeftForward.setPower(Multiplier * -gamepad1.left_stick_y);
+        LeftBack.setPower(Multiplier * -gamepad1.left_stick_y);
+
+        /*
+>>>>>>> 6ea5fea28b87ea626284521e761fb5a52eaa21ac
         telemetry.addData("RightForward", RightForward.getPower());
         telemetry.addData("LeftForward", LeftForward.getPower());
         telemetry.addData("RightBack", RightBack.getPower());
@@ -85,6 +99,8 @@ public class BetterTeleOp extends LinearOpMode {
         telemetry.addData("RightBack", RightBack.getPower());
         telemetry.addData("LeftBack", LeftBack.getPower());
         telemetry.update();
+        */
+
          if (gamepad1.y == true) {
           LeftForward.setPower(-0.8);
           LeftBack.setPower(-0.8);
@@ -183,14 +199,24 @@ public class BetterTeleOp extends LinearOpMode {
 
         }
         if (gamepad2.x == true) {
+<<<<<<< HEAD
           LeftFoundation.setPosition(0.28);
           RightFoundation.setPosition(0.72);
           // Down
+=======
+          LeftFoundation.setPosition(0.1);
+          RightFoundation.setPosition(0.80);
+          // Down Servo
+>>>>>>> 6ea5fea28b87ea626284521e761fb5a52eaa21ac
         }
         if (gamepad2.y == true) {
           LeftFoundation.setPosition(0.68);
           RightFoundation.setPosition(0.22);
+<<<<<<< HEAD
           // Up
+=======
+          // Up Servo
+>>>>>>> 6ea5fea28b87ea626284521e761fb5a52eaa21ac
         }
         if (gamepad2.left_bumper == true) {
           //LeftCascade.setPower(-0.2);
@@ -202,9 +228,8 @@ public class BetterTeleOp extends LinearOpMode {
         if (gamepad2.right_bumper == true) {
           //LeftClamp.setPosition(1);
           //RightClamp.setPosition(0.6);
-
-
         }
+
         //  RUN WITHOUT ENCODERS FOR ALL OTHER.
           //LeftCascade.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
           //RightCascade.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
