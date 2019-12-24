@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.Blinker;
@@ -68,9 +69,8 @@ public class RightStrafePark extends LinearOpMode {
     int ALL_THRESH = 15;
     int TURNTHRESH = 30;
     String TapeColor = "Null";
-    private double hue;
-    private double colorHSV;
-    
+    double hue, colorHSV;
+
     //double colorHSV = Color.argb(Color1.alpha(), Color1.red(), Color1.green(), Color1.blue());
     // Get hue.
     //double hue = JavaUtil.colorToHue(colorHSV);
@@ -95,7 +95,7 @@ public class RightStrafePark extends LinearOpMode {
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
     Color1 = hardwareMap.colorSensor.get("Color1");
-    
+
     RightBack.setDirection(DcMotorSimple.Direction.REVERSE);
     LeftBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -103,11 +103,9 @@ public class RightStrafePark extends LinearOpMode {
 
     if (opModeIsActive()) {
       while (opModeIsActive()){
-        // Display distance info.
-        // Display reflected light.
-        // Convert RGB values to HSV color model.
-        // See https://en.wikipedia.org/wiki/HSL_and_HSV for details on HSV color model.
-        // Use hue to determine if it's red, green, blue, etc..
+
+        colorHSV = Color.argb((int) Color1.alpha(), (int) Color1.red(), (int) Color1.green(), (int) Color1.blue());
+        hue = JavaUtil.colorToHue((int) colorHSV);
         if (hue < 30) {
           TapeColor = "Red";
           telemetry.addData("Color", "Red");
