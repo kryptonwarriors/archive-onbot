@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode;
-
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -68,6 +68,9 @@ public class RightStrafePark extends LinearOpMode {
     int ALL_THRESH = 15;
     int TURNTHRESH = 30;
     String TapeColor = "Null";
+    private double hue;
+    private double colorHSV;
+    
     //double colorHSV = Color.argb(Color1.alpha(), Color1.red(), Color1.green(), Color1.blue());
     // Get hue.
     //double hue = JavaUtil.colorToHue(colorHSV);
@@ -92,7 +95,9 @@ public class RightStrafePark extends LinearOpMode {
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
     Color1 = hardwareMap.colorSensor.get("Color1");
-
+    
+    RightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+    LeftBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
     waitForStart();
 
@@ -103,7 +108,7 @@ public class RightStrafePark extends LinearOpMode {
         // Convert RGB values to HSV color model.
         // See https://en.wikipedia.org/wiki/HSL_and_HSV for details on HSV color model.
         // Use hue to determine if it's red, green, blue, etc..
-        /*if (hue < 30) {
+        if (hue < 30) {
           TapeColor = "Red";
           telemetry.addData("Color", "Red");
           telemetry.update();
@@ -119,8 +124,8 @@ public class RightStrafePark extends LinearOpMode {
 
         while (TapeColor != "Red") {
           RightForward.setPower(0.5);
-          RightBack.setPower(0.5);
-          LeftForward.setPower(-0.5);
+          RightBack.setPower(-0.5);
+          LeftForward.setPower(0.5);
           LeftBack.setPower(-0.5);
         }
         RightForward.setPower(0);
@@ -128,8 +133,7 @@ public class RightStrafePark extends LinearOpMode {
         LeftForward.setPower(0);
         LeftBack.setPower(0);
         telemetry.update();
-      }*/
+      }
       }
     }
   }
-}

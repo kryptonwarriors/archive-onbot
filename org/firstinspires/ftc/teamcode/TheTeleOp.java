@@ -13,17 +13,8 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name = "TheTeleOp", group = "")
 public class TheTeleOp extends LinearOpMode {
 
-  private DcMotor RightForward;
-  private DcMotor RightBack;
-  private DcMotor LeftForward;
-  private DcMotor LeftBack;
-  private Servo LeftClamp;
-  private Servo RightClamp;
-  private Servo LeftFoundation;
-  private Servo RightFoundation;
-  private DcMotor RightCascade;
-  private DcMotor LeftCascade;
-  private DcMotor LinearActuator;
+  private DcMotor RightForward, RightBack, LeftForward, LeftBack, RightCascade, LeftCascade, LinearActuator;
+  private Servo LeftClamp, RightClamp, LeftFoundation, RightFoundation;
   private ElapsedTime runtime = new ElapsedTime();
   private double Multiplier = 0.7;
   private double StrafeMultiplier = 0.8;
@@ -140,11 +131,11 @@ public class TheTeleOp extends LinearOpMode {
           RightCascade.setPower(0);
         }
         if (gamepad2.right_bumper == true) {
-          LeftClamp.setPosition(1);
-          RightClamp.setPosition(0.6);
+          LeftClamp.setPosition(0.9);
+          RightClamp.setPosition(0.7);
         }
         LinearActuator.setPower(gamepad2.right_stick_y * -0.8);
-        RightCascade.setPower(gamepad2.left_stick_y * -0.4);
+        RightCascade.setPower(gamepad2.left_stick_y * -0.5);
         LeftCascade.setPower(gamepad2.left_stick_y * -0.5);
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
