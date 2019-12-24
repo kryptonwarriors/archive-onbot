@@ -15,6 +15,10 @@ public class BetterTeleOp extends LinearOpMode {
   private DcMotor RightBack;
   private DcMotor LeftForward;
   private DcMotor LeftBack;
+  private Servo LeftFoundation;
+  private Servo RightFoundation;
+  private Servo LeftClamp;
+  private Servo RightClamp;
   private double Multiplier = -2;
   /**
    * This function is executed when this Op Mode is selected from the Driver Station.
@@ -25,6 +29,10 @@ public class BetterTeleOp extends LinearOpMode {
     RightBack = hardwareMap.dcMotor.get("RightBack");
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     LeftBack = hardwareMap.dcMotor.get("LeftBack");
+    LeftFoundation = hardwareMap.servo.get("LeftFoundation");
+    RightFoundation = hardwareMap.servo.get("RightFoundation");
+    LeftClamp = hardwareMap.servo.get("LeftClamp");
+    RightClamp = hardwareMap.servo.get("RightClamp");
 
     RightForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     RightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -48,10 +56,10 @@ public class BetterTeleOp extends LinearOpMode {
     waitForStart();
     if (opModeIsActive()) {
       while (opModeIsActive()) {
-        LeftBack.setPower(Multiplier * gamepad1.left_stick_y);
-        RightBack.setPower(Multiplier * gamepad1.right_stick_y);
-        LeftForward.setPower(Multiplier * gamepad1.left_stick_y);
-        RightForward.setPower(Multiplier * gamepad1.right_stick_y);
+        LeftBack.setPower(2 * gamepad1.left_stick_y);
+        RightBack.setPower(-2 * gamepad1.right_stick_y);
+        LeftForward.setPower(-2 * gamepad1.left_stick_y);
+        RightForward.setPower(2 * gamepad1.right_stick_y);
         telemetry.addData("RightForward", RightForward.getPower());
         telemetry.addData("LeftForward", LeftForward.getPower());
         telemetry.addData("RightBack", RightBack.getPower());
@@ -172,16 +180,16 @@ public class BetterTeleOp extends LinearOpMode {
           //LeftClamp.setPosition(0.8);
           //RightClamp.setPosition(1);
           // Clamp out
+
         }
         if (gamepad2.x == true) {
-          //LeftFoundation.setPosition(0);
-          // RightFoundation.setPosition(1);
+          LeftFoundation.setPosition(0.28);
+          RightFoundation.setPosition(0.72);
           // Down
         }
         if (gamepad2.y == true) {
-          //LeftFoundation.setPosition(0.68);
-          //RightFoundation.setPosition(0.22);
-
+          LeftFoundation.setPosition(0.68);
+          RightFoundation.setPosition(0.22);
           // Up
         }
         if (gamepad2.left_bumper == true) {
