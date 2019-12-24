@@ -113,15 +113,14 @@ public class TheTeleOp extends LinearOpMode {
         LeftBack.setPower(-Multiplier * Scale(gamepad1.left_stick_y));
       }
       if (gamepad2.a == true) {
-          LeftClamp.setPosition(1);
-          RightClamp.setPosition(0.8);
-          // Clamp in
+        LeftClamp.setPosition(0.9);
+        RightClamp.setPosition(0.1);
+          // Clamp in & CLOSE
         }
       if (gamepad2.b == true) {
-          LeftClamp.setPosition(0.8);
-          RightClamp.setPosition(1);
-          // Clamp out
-
+        LeftClamp.setPosition(0.7);
+        RightClamp.setPosition(0.5);
+          // Clamp out & OPEN
         }
       if (gamepad2.x == true) {
           LeftFoundation.setPosition(0.28);
@@ -146,7 +145,7 @@ public class TheTeleOp extends LinearOpMode {
         }
         LinearActuator.setPower(gamepad2.right_stick_y * -0.8);
         RightCascade.setPower(gamepad2.left_stick_y * -0.4);
-        LeftCascade.setPower(gamepad2.left_stick_y * 0.5);
+        LeftCascade.setPower(gamepad2.left_stick_y * -0.5);
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("RightForward", RightForward.getPower());
