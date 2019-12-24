@@ -135,7 +135,7 @@ public class TheTeleOp extends LinearOpMode {
           RightClamp.setPosition(0.6);
         }
         LinearActuator.setPower(gamepad2.right_stick_y * -0.8);
-        RightCascade.setPower(gamepad2.left_stick_y * -0.4);
+        RightCascade.setPower(gamepad2.left_stick_y * -0.5);
         LeftCascade.setPower(gamepad2.left_stick_y * -0.5);
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
