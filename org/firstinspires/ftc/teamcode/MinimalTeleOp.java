@@ -1,3 +1,4 @@
+/*
 package org.firstinspires.ftc.teamcode;
 // import Rahuls's Genius & IQ
 // import GOAT || AMAN
@@ -21,7 +22,7 @@ public class MinimalTeleOp extends LinearOpMode {
   private double Multiplier = -1.5;
   /**
    * This function is executed when this Op Mode is selected from the Driver Station.
-   */
+   
   @Override
   public void runOpMode() {
     RightForward = hardwareMap.dcMotor.get("RightForward");
@@ -102,4 +103,4 @@ public class MinimalTeleOp extends LinearOpMode {
     }
   }
 }
-
+*/

@@ -1,3 +1,4 @@
+/*
 package org.firstinspires.ftc.teamcode;
 // import Rahuls's Genius & IQ;
 // import AMAN;
@@ -19,15 +20,7 @@ public class BetterTeleOp extends LinearOpMode {
   private Servo RightFoundation;
   private Servo LeftClamp;
   private Servo RightClamp;
-<<<<<<< HEAD
-  private double Multiplier = -2;
-=======
-  private double Multiplier = 0.65;
->>>>>>> 6ea5fea28b87ea626284521e761fb5a52eaa21ac
   /**
-   * This function is executed when this Op Mode is selected from the Driver Station.
-   */
-  @Override
   public void runOpMode() {
     RightForward = hardwareMap.dcMotor.get("RightForward");
     RightBack = hardwareMap.dcMotor.get("RightBack");
@@ -100,7 +93,7 @@ public class BetterTeleOp extends LinearOpMode {
         telemetry.addData("LeftBack", LeftBack.getPower());
         telemetry.update();
         */
-
+/*
          if (gamepad1.y == true) {
           LeftForward.setPower(-0.8);
           LeftBack.setPower(-0.8);
@@ -241,3 +234,4 @@ public class BetterTeleOp extends LinearOpMode {
     }
   }
 }
+*/

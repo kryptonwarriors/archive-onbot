@@ -54,12 +54,12 @@ public class Aman extends LinearOpMode {
       while (opModeIsActive()) {
         LeftTrigger = gamepad1.left_trigger;
         RightTrigger = gamepad1.right_trigger;
-
+        
         RightBack.setPower(-gamepad1.right_stick_y);
         RightForward.setPower(-gamepad1.right_stick_y);
         LeftForward.setPower(-gamepad1.left_stick_y);
         LeftBack.setPower(-gamepad1.left_stick_y);
-
+        
         telemetry.addData("RightForward", RightForward.getPower());
         telemetry.addData("LeftForward", LeftForward.getPower());
         telemetry.addData("RightBack", RightBack.getPower());
@@ -68,30 +68,21 @@ public class Aman extends LinearOpMode {
         telemetry.addData("RightTrigger", RightTrigger);
         telemetry.update();
 
+        // Strafing to the Right
+        LeftForward.setPower(-1 * RightTrigger);
+        LeftBack.setPower(1 * RightTrigger);
+        RightForward.setPower(-1 * RightTrigger);
+        RightBack.setPower(1 * RightTrigger);
+          
         
-          // Strafing to the Right
-        if (gamepad1.right_bumper) {
-        LeftForward.setPower(-1);
-        LeftBack.setPower(1);
-        RightForward.setPower(-1);
-        RightBack.setPower(1);
-        }
+        
+        /*
         // Strafing to the Left
-        if (gamepad1.left_bumper) {
-        LeftForward.setPower(1);
-        LeftBack.setPower(-1);
-        RightForward.setPower(1);
-        RightBack.setPower(-1);  
-        }
-        
-        
-        
-        // Strafing to the Left
-        LeftForward.setPower(-1 * LeftTrigger);
+        LeftForward.setPower(1 * LeftTrigger);
         LeftBack.setPower(-1 * LeftTrigger);
-        RightForward.setPower(-1 * LeftTrigger);
+        RightForward.setPower(1 * LeftTrigger);
         RightBack.setPower(-1 * LeftTrigger);
-        
+        */
       }
     }
   }
