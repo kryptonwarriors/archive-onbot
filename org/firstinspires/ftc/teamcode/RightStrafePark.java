@@ -22,16 +22,19 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaSkyStone;
 import org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone;
 import java.util.List;
+import android.app.Activity;
+import java.util.Locale;
+import android.view.View;
 import android.graphics.Color;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
 
-
-
-@Autonomous(name = "RightStrafePark (Blocks to Java)", group = "")
+@Autonomous(name = "RightStrafePark", group = "")
 public class RightStrafePark extends LinearOpMode {
 
+    private OpticalDistanceSensor Rain_OpticalDistanceSensor;
+    private ColorSensor Rain;
     private DistanceSensor BackDistance;
     private Blinker Control_Hub;
     private Blinker Expansion_Hub;
@@ -51,14 +54,12 @@ public class RightStrafePark extends LinearOpMode {
     private HardwareDevice webcam_1;
     private Gyroscope imu_1;
     private Gyroscope imu;
-    private ColorSensor Color1;
     int FORWARD = 0;
     int BACKWARD = 1;
     int LEFT = 2;
     int RIGHT = 3;
     int UP = 4;
     int WALL = 5;
-    int park = UP;
     int RTurn = 6;
     int LTurn = 7;
     int EXTEND = 8;
@@ -66,18 +67,13 @@ public class RightStrafePark extends LinearOpMode {
     int THRESH = 15;
     int ALL_THRESH = 15;
     int TURNTHRESH = 30;
-    String TapeColor = "Black";
-
-    int colorHSV = Color.argb((int) Color1.alpha(), (int) Color1.red(), (int) Color1.green(), (int) Color1.blue());
-    int hue = (int) JavaUtil.colorToHue(colorHSV);
-
-    
-
-
+    String TapeColor = null;
 
     @Override
     public void runOpMode() {
 
+    // Rain_OpticalDistanceSensor = hardwareMap.opticalDistanceSensor.get("Rain");
+    Rain = hardwareMap.get(ColorSensor.class, "Rain");
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     RightForward = hardwareMap.dcMotor.get("RightForward");
     LeftBack = hardwareMap.dcMotor.get("LeftBack");
@@ -92,18 +88,14 @@ public class RightStrafePark extends LinearOpMode {
     RightFoundation = hardwareMap.servo.get("RightFoundation");
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
-    Color1 = hardwareMap.colorSensor.get("Color1");
-
-
+    telemetry.addData(">", "INIT DONE");
+    telemetry.update();
     waitForStart();
 
     if (opModeIsActive()) {
       while (opModeIsActive()){
-        // Display distance info.
-        // Display reflected light.
-        // Convert RGB values to HSV color model.
-        // See https://en.wikipedia.org/wiki/HSL_and_HSV for details on HSV color model.
-        // Use hue to determine if it's red, green, blue, etc..
+       int colorHSV = Rain.argb();
+      int hue = (int) JavaUtil.colorToHue(colorHSV);
         if (hue < 30) {
           TapeColor = "Red";
           telemetry.addData("Color", "Red");
