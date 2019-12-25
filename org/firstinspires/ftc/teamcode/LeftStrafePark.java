@@ -97,10 +97,10 @@ public class LeftStrafePark extends LinearOpMode {
 
     if (opModeIsActive()) {
       while (opModeIsActive()){
+      //int colorHSV = Color.argb();
       int colorHSV = Color.argb();
-      //int colorHSV = Color.argb((int) Color.alpha(), (int) Color.red(), (int) Color.green(), (int) Color.blue());
-      //int hue = (int) JavaUtil.colorToHue(colorHSV);
       int hue = (int) JavaUtil.colorToHue(colorHSV);
+      //int hue = (int) JavaUtil.colorToHue(colorHSV);
 
 
         if (hue < 225) {
