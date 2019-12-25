@@ -29,8 +29,8 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
 
-@Autonomous(name = "LeftStrafePark", group = "")
-public class LeftStrafePark extends LinearOpMode {
+@Autonomous(name = "DELAYLeftStrafePark", group = "")
+public class DELAYLeftStrafePark extends LinearOpMode {
 
     private DistanceSensor BackDistance;
     private Blinker Control_Hub;
@@ -52,7 +52,6 @@ public class LeftStrafePark extends LinearOpMode {
     private Gyroscope imu_1;
     private Gyroscope imu;
     private ColorSensor Color;
-    private OpticalDistanceSensor Color_OpticalDistanceSensor;
     int FORWARD = 0;
     int BACKWARD = 1;
     int LEFT = 2;
@@ -66,7 +65,9 @@ public class LeftStrafePark extends LinearOpMode {
     int THRESH = 15;
     int ALL_THRESH = 15;
     int TURNTHRESH = 30;
-    String TapeColor = "null";
+    String TapeColor = null;
+    int SLEEPTIME = 10; // SLEEP TIME GOES HERE.
+    int SLEEP;
     double colorHSV, hue;
     @Override
     public void runOpMode() {
@@ -85,10 +86,11 @@ public class LeftStrafePark extends LinearOpMode {
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
     Color = hardwareMap.get(ColorSensor.class, "Color");
-    Color_OpticalDistanceSensor = hardwareMap.opticalDistanceSensor.get("Color");
 
     RightBack.setDirection(DcMotorSimple.Direction.REVERSE);
     LeftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+
+    SLEEP = SLEEPTIME * 1000;
 
     telemetry.addData(">", "INIT DONE");
     telemetry.update();
@@ -97,46 +99,33 @@ public class LeftStrafePark extends LinearOpMode {
 
     if (opModeIsActive()) {
       while (opModeIsActive()){
+        sleep(SLEEP); // THE TIME DEFINED ABOVE.
       int colorHSV = Color.argb();
-      //int colorHSV = Color.argb((int) Color.alpha(), (int) Color.red(), (int) Color.green(), (int) Color.blue());
-      //int hue = (int) JavaUtil.colorToHue(colorHSV);
       int hue = (int) JavaUtil.colorToHue(colorHSV);
-
-        
-        if (hue < 225) {
+        if (hue < 30) {
+          TapeColor = "Red";
+          telemetry.addData("Color", "Red");
+          telemetry.update();
+        } else if (hue < 225) {
           TapeColor = "Blue";
           telemetry.addData("Color", "Blue");
           telemetry.update();
         } else {
-          TapeColor = "Not Blue";
-          telemetry.addData("Color", "Not Blue");
+          TapeColor = "Red";
+          telemetry.addData("Color", "Red");
           telemetry.update();
         }
 
-        while (TapeColor == "null") {
-          LeftForward.setPower(0.1);
-          RightForward.setPower(0.1);
-          LeftBack.setPower(-0.1);
-          RightBack.setPower(-0.1);
-
-          // sleep(600);
-
-          /*
-          RightForward.setPower(0.2);
-          RightBack.setPower(-0.2);
-          LeftForward.setPower(0.2);
-          LeftBack.setPower(-0.2);
-          */
-          telemetry.addData("TapeColor", TapeColor);
-          telemetry.addData(">", "COLOR NOT DETECTED");
-          telemetry.update();
+        while (TapeColor != "Blue") {
+          RightForward.setPower(0.5);
+          RightBack.setPower(-0.5);
+          LeftForward.setPower(0.5);
+          LeftBack.setPower(-0.5);
         }
         RightForward.setPower(0);
         RightBack.setPower(0);
         LeftForward.setPower(0);
         LeftBack.setPower(0);
-
-        telemetry.addData(">", "DONE");
         telemetry.update();
       }
       }
