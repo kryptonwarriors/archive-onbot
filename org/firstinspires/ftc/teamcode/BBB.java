@@ -64,11 +64,11 @@ public class BBB extends LinearOpMode {
    */
   @Override
   public void runOpMode() {
-    
+
     //dhriti is the lead of the team
     //aman is the greatest
     //muthu and aarav are eh
-    
+
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     RightForward = hardwareMap.dcMotor.get("RightForward");
     LeftBack = hardwareMap.dcMotor.get("LeftBack");

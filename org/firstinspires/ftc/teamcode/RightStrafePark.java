@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -18,7 +17,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaSkyStone;
@@ -29,7 +27,9 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
 
-@Autonomous(name = "RightStrafePark", group = "")
+
+
+@Autonomous(name = "RightStrafePark (Blocks to Java)", group = "")
 public class RightStrafePark extends LinearOpMode {
 
     private DistanceSensor BackDistance;
@@ -66,11 +66,18 @@ public class RightStrafePark extends LinearOpMode {
     int THRESH = 15;
     int ALL_THRESH = 15;
     int TURNTHRESH = 30;
-    String TapeColor = "Null";
-    double hue, colorHSV;
+    String TapeColor = "Black";
+
+    int colorHSV = Color.argb((int) Color1.alpha(), (int) Color1.red(), (int) Color1.green(), (int) Color1.blue());
+    int hue = (int) JavaUtil.colorToHue(colorHSV);
+
+    
+
+
 
     @Override
     public void runOpMode() {
+
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     RightForward = hardwareMap.dcMotor.get("RightForward");
     LeftBack = hardwareMap.dcMotor.get("LeftBack");
@@ -87,16 +94,16 @@ public class RightStrafePark extends LinearOpMode {
     RightClamp = hardwareMap.servo.get("RightClamp");
     Color1 = hardwareMap.colorSensor.get("Color1");
 
-    RightBack.setDirection(DcMotorSimple.Direction.REVERSE);
-    LeftBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
     waitForStart();
 
     if (opModeIsActive()) {
       while (opModeIsActive()){
-
-        colorHSV = Color.argb((int) Color1.alpha(), (int) Color1.red(), (int) Color1.green(), (int) Color1.blue());
-        hue = JavaUtil.colorToHue((int) colorHSV);
+        // Display distance info.
+        // Display reflected light.
+        // Convert RGB values to HSV color model.
+        // See https://en.wikipedia.org/wiki/HSL_and_HSV for details on HSV color model.
+        // Use hue to determine if it's red, green, blue, etc..
         if (hue < 30) {
           TapeColor = "Red";
           telemetry.addData("Color", "Red");
@@ -111,10 +118,10 @@ public class RightStrafePark extends LinearOpMode {
           telemetry.update();
         }
 
-        while (TapeColor != "Red") {
+        while (TapeColor == "Black") {
           RightForward.setPower(0.5);
-          RightBack.setPower(-0.5);
-          LeftForward.setPower(0.5);
+          RightBack.setPower(0.5);
+          LeftForward.setPower(-0.5);
           LeftBack.setPower(-0.5);
         }
         RightForward.setPower(0);
@@ -126,3 +133,4 @@ public class RightStrafePark extends LinearOpMode {
       }
     }
   }
+
