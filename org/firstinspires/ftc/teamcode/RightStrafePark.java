@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.Gyroscope;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -33,8 +34,8 @@ import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 @Autonomous(name = "RightStrafePark", group = "")
 public class RightStrafePark extends LinearOpMode {
 
-    private OpticalDistanceSensor Rain_OpticalDistanceSensor;
-    private ColorSensor Rain;
+    // private OpticalDistanceSensor Color_OpticalDistanceSensor;
+    private ColorSensor Color;
     private DistanceSensor BackDistance;
     private Blinker Control_Hub;
     private Blinker Expansion_Hub;
@@ -73,7 +74,7 @@ public class RightStrafePark extends LinearOpMode {
     public void runOpMode() {
 
     // Rain_OpticalDistanceSensor = hardwareMap.opticalDistanceSensor.get("Rain");
-    Rain = hardwareMap.get(ColorSensor.class, "Rain");
+    Color = hardwareMap.get(ColorSensor.class, "Color");
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     RightForward = hardwareMap.dcMotor.get("RightForward");
     LeftBack = hardwareMap.dcMotor.get("LeftBack");
@@ -94,7 +95,7 @@ public class RightStrafePark extends LinearOpMode {
 
     if (opModeIsActive()) {
       while (opModeIsActive()){
-       int colorHSV = Rain.argb();
+      int colorHSV = Color.argb();
       int hue = (int) JavaUtil.colorToHue(colorHSV);
         if (hue < 30) {
           TapeColor = "Red";

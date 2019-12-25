@@ -51,14 +51,13 @@ public class LeftStrafePark extends LinearOpMode {
     private HardwareDevice webcam_1;
     private Gyroscope imu_1;
     private Gyroscope imu;
-    private ColorSensor Color1;
+    private ColorSensor Color;
     int FORWARD = 0;
     int BACKWARD = 1;
     int LEFT = 2;
     int RIGHT = 3;
     int UP = 4;
     int WALL = 5;
-    int park = UP;
     int RTurn = 6;
     int LTurn = 7;
     int EXTEND = 8;
@@ -66,9 +65,8 @@ public class LeftStrafePark extends LinearOpMode {
     int THRESH = 15;
     int ALL_THRESH = 15;
     int TURNTHRESH = 30;
-    String TapeColor = "Null";
-    double hue, colorHSV;
-
+    String TapeColor = null;
+    double colorHSV, hue;
     @Override
     public void runOpMode() {
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
@@ -85,18 +83,21 @@ public class LeftStrafePark extends LinearOpMode {
     RightFoundation = hardwareMap.servo.get("RightFoundation");
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
-    Color1 = hardwareMap.colorSensor.get("Color1");
+    Color = hardwareMap.colorSensor.get("Color");
 
     RightBack.setDirection(DcMotorSimple.Direction.REVERSE);
     LeftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+
+    telemetry.addData(">", "INIT DONE");
+    telemetry.update();
 
     waitForStart();
 
     if (opModeIsActive()) {
       while (opModeIsActive()){
 
-        colorHSV = Color.argb((int) Color1.alpha(), (int) Color1.red(), (int) Color1.green(), (int) Color1.blue());
-        hue = JavaUtil.colorToHue((int) colorHSV);
+      int colorHSV = Color.argb();
+      int hue = (int) JavaUtil.colorToHue(colorHSV);
         if (hue < 30) {
           TapeColor = "Red";
           telemetry.addData("Color", "Red");
