@@ -83,7 +83,7 @@ public class LeftStrafePark extends LinearOpMode {
     RightFoundation = hardwareMap.servo.get("RightFoundation");
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
-    Color = hardwareMap.colorSensor.get("Color");
+    Color = hardwareMap.get(ColorSensor.class, "Color");
 
     RightBack.setDirection(DcMotorSimple.Direction.REVERSE);
     LeftBack.setDirection(DcMotorSimple.Direction.REVERSE);
