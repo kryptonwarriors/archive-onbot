@@ -102,7 +102,7 @@ public class LeftStrafePark extends LinearOpMode {
       //int hue = (int) JavaUtil.colorToHue(colorHSV);
       int hue = (int) JavaUtil.colorToHue(colorHSV);
 
-        
+
         if (hue < 225) {
           TapeColor = "Blue";
           telemetry.addData("Color", "Blue");
