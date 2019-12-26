@@ -98,21 +98,19 @@ public class RightStrafePark extends LinearOpMode {
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
 
-    telemetry.addData(">", "INIT DONE");
-    telemetry.update();
-
-    waitForStart();
-
     LeftForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     RightForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     LeftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     RightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+    telemetry.addData(">", "INIT DONE");
+    telemetry.update();
+
+    waitForStart();
+
     if (opModeIsActive()) {
-      Encoder_Function(FORWARD, 200, 0.1);
-      //sleep(200);
-      //Encoder_Function(BACKWARD, 500, 0.4);
-      //sleep(200);
+      Encoder_Function(FORWARD, 500, 0.3);
+      Encoder_Function(LEFT, 500, 0.3);
       // Encoder_Function(BACKWARD, 1000, 0.3);
     }
 
@@ -132,46 +130,23 @@ public class RightStrafePark extends LinearOpMode {
     LeftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     RightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-    LeftForward.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    RightForward.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    LeftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    RightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    LeftForward.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    RightForward.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    LeftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    RightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     THRESH = ALL_THRESH;
     if (Direction == FORWARD) {
-    
-      RightForward.setTargetPosition(TargetPosition);
-      LeftBack.setTargetPosition(TargetPosition);
-      LeftForward.setTargetPosition(-TargetPosition);
-      RightBack.setTargetPosition(-TargetPosition);
-
-      LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      
       RightForward.setPower(Power);
       LeftBack.setPower(Power);
-      LeftForward.setPower(Power);
-      RightBack.setPower(Power);
-      
+      LeftForward.setPower(-Power);
+      RightBack.setPower(-Power);
     }
     else if (Direction == BACKWARD) {
-      RightForward.setTargetPosition(-TargetPosition);
-      LeftBack.setTargetPosition(-TargetPosition);
-      LeftForward.setTargetPosition(TargetPosition);
-      RightBack.setTargetPosition(TargetPosition);
-
-      LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      
-      RightForward.setPower(Power);
-      LeftBack.setPower(Power);
+      RightForward.setPower(-Power);
+      LeftBack.setPower(-Power);
       LeftForward.setPower(Power);
       RightBack.setPower(Power);
-    
     }
     else if (Direction == LEFT) {
       LeftForward.setPower(Power);
@@ -199,9 +174,8 @@ public class RightStrafePark extends LinearOpMode {
       RightForward.setPower(Power);
       RightBack.setPower(Power);
     }
-    
 
-    while ( ( (Math.abs(Math.abs(LeftForward.getCurrentPosition()) - Math.abs(TargetPosition)) > THRESH)
+    while ( ( (Math.abs(Math.abs(LeftBack.getCurrentPosition()) - Math.abs(TargetPosition)) > THRESH)
             )
             && !isStopRequested()
           )
@@ -225,7 +199,7 @@ public class RightStrafePark extends LinearOpMode {
     RightBack.setPower(0.0);
     telemetry.addData("Zero", "Motors stopped");
     telemetry.update();
-    
+
   } // End of function
 
 } //End of Class
