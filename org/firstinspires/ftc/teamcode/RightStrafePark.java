@@ -34,27 +34,30 @@ import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 @Autonomous(name = "RightStrafePark", group = "")
 public class RightStrafePark extends LinearOpMode {
 
-    // private OpticalDistanceSensor Color_OpticalDistanceSensor;
+    private static DcMotor LeftForward = null;
+    private static DcMotor LeftBack = null;
+    private static DcMotor RightForward = null;
+    private static DcMotor RightBack = null;
+    private static DcMotor LinearActuator = null;
+    private static DcMotor LeftCascade = null;
+    private static DcMotor RightCascade = null;
+
+    private static Servo LeftClamp = null;
+    private static Servo LeftFoundation = null;
+    private static Servo RightClamp = null;
+    private static Servo RightFoundation = null;
+
     private ColorSensor Color;
     private DistanceSensor BackDistance;
     private Blinker Control_Hub;
     private Blinker Expansion_Hub;
     private TouchSensor LFBumper;
-    private DcMotor LeftBack;
-    private DcMotor LeftCascade;
-    private Servo LeftClamp;
-    private DcMotor LeftForward;
-    private Servo LeftFoundation;
-    private DcMotor LinearActuator;
     private TouchSensor RFBumper;
-    private DcMotor RightBack;
-    private DcMotor RightCascade;
-    private Servo RightClamp;
-    private DcMotor RightForward;
-    private Servo RightFoundation;
     private HardwareDevice webcam_1;
     private Gyroscope imu_1;
     private Gyroscope imu;
+
+
     int FORWARD = 0;
     int BACKWARD = 1;
     int LEFT = 2;
@@ -70,60 +73,160 @@ public class RightStrafePark extends LinearOpMode {
     int TURNTHRESH = 30;
     String TapeColor = null;
 
+   
     @Override
     public void runOpMode() {
 
-    // Rain_OpticalDistanceSensor = hardwareMap.opticalDistanceSensor.get("Rain");
-    Color = hardwareMap.get(ColorSensor.class, "Color");
+    
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     RightForward = hardwareMap.dcMotor.get("RightForward");
     LeftBack = hardwareMap.dcMotor.get("LeftBack");
     RightBack = hardwareMap.dcMotor.get("RightBack");
+    
     LinearActuator = hardwareMap.dcMotor.get("LinearActuator");
     LeftCascade = hardwareMap.dcMotor.get("LeftCascade");
     RightCascade = hardwareMap.dcMotor.get("RightCascade");
+
+    Color = hardwareMap.get(ColorSensor.class, "Color");
+    
     BackDistance = hardwareMap.get(DistanceSensor.class, "BackDistance");
     LFBumper = hardwareMap.get(RevTouchSensor.class, "LFBumper");
     RFBumper = hardwareMap.get(RevTouchSensor.class, "RFBumper");
+
     LeftFoundation = hardwareMap.servo.get("LeftFoundation");
     RightFoundation = hardwareMap.servo.get("RightFoundation");
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
+
     telemetry.addData(">", "INIT DONE");
     telemetry.update();
+
     waitForStart();
 
-    if (opModeIsActive()) {
-      while (opModeIsActive()){
-      int colorHSV = Color.argb();
-      int hue = (int) JavaUtil.colorToHue(colorHSV);
-        if (hue < 30) {
-          TapeColor = "Red";
-          telemetry.addData("Color", "Red");
-          telemetry.update();
-        } else if (hue < 225) {
-          TapeColor = "Blue";
-          telemetry.addData("Color", "Blue");
-          telemetry.update();
-        } else {
-          TapeColor = "Red";
-          telemetry.addData("Color", "Red");
-          telemetry.update();
-        }
+    LeftForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    RightForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    LeftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    RightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        while (TapeColor == "Black") {
-          RightForward.setPower(0.5);
-          RightBack.setPower(0.5);
-          LeftForward.setPower(-0.5);
-          LeftBack.setPower(-0.5);
-        }
-        RightForward.setPower(0);
-        RightBack.setPower(0);
-        LeftForward.setPower(0);
-        LeftBack.setPower(0);
-        telemetry.update();
-      }
-      }
+    if (opModeIsActive()) {
+      Encoder_Function(FORWARD, 200, 0.1);
+      //sleep(200);
+      //Encoder_Function(BACKWARD, 500, 0.4);
+      //sleep(200);
+      // Encoder_Function(BACKWARD, 1000, 0.3);
     }
-  }
+
+  } //End of opmode
+
+  private void Encoder_Function(int Direction, int TargetPosition, double Power)
+  {
+    int FORWARD = 0;
+    int BACKWARD = 1;
+    int LEFT = 2;
+    int RIGHT = 3;
+    int RTurn = 6;
+    int LTurn = 7;
+
+    LeftForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    RightForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    LeftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    RightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+    LeftForward.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    RightForward.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    LeftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    RightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+    THRESH = ALL_THRESH;
+    if (Direction == FORWARD) {
+    
+      RightForward.setTargetPosition(TargetPosition);
+      LeftBack.setTargetPosition(TargetPosition);
+      LeftForward.setTargetPosition(-TargetPosition);
+      RightBack.setTargetPosition(-TargetPosition);
+
+      LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      RightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      
+      RightForward.setPower(Power);
+      LeftBack.setPower(Power);
+      LeftForward.setPower(Power);
+      RightBack.setPower(Power);
+      
+    }
+    else if (Direction == BACKWARD) {
+      RightForward.setTargetPosition(-TargetPosition);
+      LeftBack.setTargetPosition(-TargetPosition);
+      LeftForward.setTargetPosition(TargetPosition);
+      RightBack.setTargetPosition(TargetPosition);
+
+      LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      RightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      
+      RightForward.setPower(Power);
+      LeftBack.setPower(Power);
+      LeftForward.setPower(Power);
+      RightBack.setPower(Power);
+    
+    }
+    else if (Direction == LEFT) {
+      LeftForward.setPower(Power);
+      LeftBack.setPower(Power);
+      RightForward.setPower(Power);
+      RightBack.setPower(Power);
+    }
+    else if (Direction == RIGHT) {
+      LeftForward.setPower(-Power);
+      LeftBack.setPower(-Power);
+      RightForward.setPower(-Power);
+      RightBack.setPower(-Power);
+    }
+    else if (Direction == RTurn) {
+      THRESH = TURNTHRESH;
+      LeftForward.setPower(-Power);
+      LeftBack.setPower(-Power);
+      RightForward.setPower(-Power);
+      RightBack.setPower(-Power);
+    }
+    else if (Direction == LTurn) {
+      THRESH = TURNTHRESH;
+      LeftForward.setPower(Power);
+      LeftBack.setPower(Power);
+      RightForward.setPower(Power);
+      RightBack.setPower(Power);
+    }
+    
+
+    while ( ( (Math.abs(Math.abs(LeftForward.getCurrentPosition()) - Math.abs(TargetPosition)) > THRESH)
+            )
+            && !isStopRequested()
+          )
+    {
+          telemetry.addData("Direction", Direction);
+          telemetry.addData("key", "moving");
+          telemetry.addData("LFCurrentPosition", LeftForward.getCurrentPosition());
+          telemetry.addData("LFTargetPosition", -TargetPosition);
+          telemetry.addData("RFCurrentPosition", RightForward.getCurrentPosition());
+          telemetry.addData("RFTargetPosition", TargetPosition);
+          telemetry.addData("LBCurrentPosition", LeftBack.getCurrentPosition());
+          telemetry.addData("LBTargetPosition", TargetPosition);
+          telemetry.addData("RBCurrentPosition", RightBack.getCurrentPosition());
+          telemetry.addData("RBTargetPosition", -TargetPosition);
+          telemetry.update();
+    }
+
+    LeftBack.setPower(0.0);
+    LeftForward.setPower(0.0);
+    RightForward.setPower(0.0);
+    RightBack.setPower(0.0);
+    telemetry.addData("Zero", "Motors stopped");
+    telemetry.update();
+    
+  } // End of function
+
+} //End of Class
 
