@@ -348,6 +348,8 @@ public class VuforiaWorker extends LinearOpMode {
                 }
             }
 
+           String SkyStonePos = "";
+
             // Provide feedback as to where the robot is located (if we know).
             if (targetVisible) {
                 // express position (translation) of robot in inches.
@@ -355,6 +357,16 @@ public class VuforiaWorker extends LinearOpMode {
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
+                        double yPos = translation.get(1);
+                  if (yPos < -6.50) {
+                          SkyStonePos = "Right";
+                  } else if (yPos > 8) {
+                          SkyStonePos = "Left";
+                  } else {
+                          SkyStonePos = "Center";
+                  }
+                        telemetry.addData("SkyStonePosition", SkyStonePos);
+                        telemetry.addData("yPos", yPos);
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
