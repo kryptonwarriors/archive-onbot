@@ -50,8 +50,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
-
-
 @Autonomous(name = "TestCamera", group = "")
 public class TestCamera extends LinearOpMode {
 
@@ -135,7 +133,8 @@ public class TestCamera extends LinearOpMode {
    
     @Override
     public void runOpMode() {
-
+    
+    
     webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
     int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
     VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -202,6 +201,20 @@ public class TestCamera extends LinearOpMode {
     if (opModeIsActive()) {
       targetsSkyStone.activate();
       
+      LeftForward.setPower(-0.4);
+      RightForward.setPower(-0.4);
+      LeftBack.setPower(-0.4);
+      RightBack.setPower(-0.4);
+      while(BackDistance.getDistance(DistanceUnit.INCH) <= 24) {
+        telemetry.addData("range", String.format("%.01f in", BackDistance.getDistance(DistanceUnit.INCH)));
+        telemetry.update();
+      }
+      
+      Encoder_Function(LEFT, 300, 0.4);
+      LeftForward.setPower(-0.3);
+      RightForward.setPower(-0.3);
+      LeftBack.setPower(-0.3);
+      RightBack.setPower(-0.3);
       
       String SkyStonePos = "";
         while (opModeIsActive()) {
@@ -251,7 +264,10 @@ public class TestCamera extends LinearOpMode {
             telemetry.update();
         }
       
-      
+      LeftForward.setPower(0);
+      RightForward.setPower(0);
+      LeftBack.setPower(0);
+      RightBack.setPower(0);
       
     }
     targetsSkyStone.deactivate();
