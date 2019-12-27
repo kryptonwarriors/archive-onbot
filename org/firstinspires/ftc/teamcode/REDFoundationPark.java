@@ -31,8 +31,8 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
 
-@Autonomous(name = "LeftStrafeParkUp", group = "")
-public class LeftStrafeParkUp extends LinearOpMode {
+@Autonomous(name = "REDFoundationPark", group = "")
+public class REDFoundationPark extends LinearOpMode {
 
     private static DcMotor LeftForward = null;
     private static DcMotor LeftBack = null;
@@ -109,6 +109,7 @@ public class LeftStrafeParkUp extends LinearOpMode {
     waitForStart();
 
     if (opModeIsActive()) {
+      
       Encoder_Function(FORWARD, 400, 0.5);
       Encoder_Function(LEFT, 900, 0.5);
       // Encoder_Function(BACKWARD, 1000, 0.3);

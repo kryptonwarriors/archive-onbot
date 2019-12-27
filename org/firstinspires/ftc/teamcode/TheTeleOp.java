@@ -119,8 +119,8 @@ public class TheTeleOp extends LinearOpMode {
           // Down
         }
         if (gamepad2.y == true) {
-          LeftFoundation.setPosition(0.68);
-          RightFoundation.setPosition(0.22);
+          LeftFoundation.setPosition(0.80);
+          RightFoundation.setPosition(0.42);
           // Up
         }
         if (gamepad2.left_bumper == true) {
