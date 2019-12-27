@@ -80,28 +80,28 @@ public class TheTeleOp extends LinearOpMode {
       } else if (gamepad1.a) {
          RightBack.setPower(-0.4);
         RightForward.setPower(-0.4);
-        LeftForward.setPower(-0.4);
-        LeftBack.setPower(-0.4);
+        LeftForward.setPower(0.4);
+        LeftBack.setPower(0.4);
       }else if (gamepad1.y) {
         RightBack.setPower(0.4);
         RightForward.setPower(0.4);
-        LeftForward.setPower(0.4);
-        LeftBack.setPower(0.4);
+        LeftForward.setPower(-0.4);
+        LeftBack.setPower(-0.4);
       } else if (gamepad1.right_bumper) {
           RightBack.setPower(-0.8);
         RightForward.setPower(-0.8);
-        LeftForward.setPower(0.8);
-        LeftBack.setPower(0.8);
+        LeftForward.setPower(-0.8);
+        LeftBack.setPower(-0.8);
       } else if (gamepad1.left_bumper) {
          RightBack.setPower(0.8);
         RightForward.setPower(0.8);
-        LeftForward.setPower(-0.8);
-        LeftBack.setPower(-0.8);
+        LeftForward.setPower(0.8);
+        LeftBack.setPower(0.8);
       } else {
         RightBack.setPower(-Multiplier * Scale(gamepad1.right_stick_y));
         RightForward.setPower(-Multiplier * Scale(gamepad1.right_stick_y));
-        LeftForward.setPower(-Multiplier * Scale(gamepad1.left_stick_y));
-        LeftBack.setPower(-Multiplier * Scale(gamepad1.left_stick_y));
+        LeftForward.setPower(Multiplier * Scale(gamepad1.left_stick_y));
+        LeftBack.setPower(Multiplier * Scale(gamepad1.left_stick_y));
       }
       if (gamepad2.a == true) {
         LeftClamp.setPosition(0.8);
@@ -120,7 +120,7 @@ public class TheTeleOp extends LinearOpMode {
         }
         if (gamepad2.y == true) {
           LeftFoundation.setPosition(0.80);
-          RightFoundation.setPosition(0.42);
+          RightFoundation.setPosition(0.22);
           // Up
         }
         if (gamepad2.left_bumper == true) {
