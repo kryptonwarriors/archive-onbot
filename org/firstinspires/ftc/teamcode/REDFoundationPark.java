@@ -109,10 +109,8 @@ public class REDFoundationPark extends LinearOpMode {
     waitForStart();
 
     if (opModeIsActive()) {
-      
-      Encoder_Function(FORWARD, 400, 0.5);
-      Encoder_Function(LEFT, 900, 0.5);
-      // Encoder_Function(BACKWARD, 1000, 0.3);
+
+      Encoder_Function(BACKWARD, 700, 0.5);
     }
 
   } //End of opmode

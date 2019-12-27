@@ -31,8 +31,20 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
 
-@Autonomous(name = "BetterReload", group = "")
-public class BetterReload extends LinearOpMode {
+
+
+
+
+
+
+
+
+
+
+
+
+@Autonomous(name = "BetterBot", group = "")
+public class BetterBot extends LinearOpMode {
 
     private static DcMotor LeftForward = null;
     private static DcMotor LeftBack = null;
