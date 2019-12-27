@@ -111,7 +111,7 @@ public class DELAYLeftStrafeParkUp extends LinearOpMode {
     if (opModeIsActive()) {
       sleep(10000);
       Encoder_Function(FORWARD, 350, 0.5);
-      Encoder_Function(LEFT, 900, 0.5);
+      Encoder_Function(LEFT, 950, 0.5);
       // Encoder_Function(BACKWARD, 1000, 0.3);
     }
 
