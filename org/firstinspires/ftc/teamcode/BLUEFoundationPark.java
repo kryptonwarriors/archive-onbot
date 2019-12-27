@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.Gyroscope;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import java.lang.annotation.Target;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.hardware.rev.RevTouchSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -58,8 +57,6 @@ public class BLUEFoundationPark extends LinearOpMode {
     private Gyroscope imu_1;
     private Gyroscope imu;
 
-    private ElapsedTime runtime = new ElapsedTime();
-
 
     int FORWARD = 0;
     int BACKWARD = 1;
@@ -108,8 +105,6 @@ public class BLUEFoundationPark extends LinearOpMode {
 
     LeftFoundation.setPosition(0.80);
     RightFoundation.setPosition(0.22);
-
-    runtime.reset(); // RESET THE TIME.
 
     telemetry.addData(">", "INIT DONE");
     telemetry.update();
