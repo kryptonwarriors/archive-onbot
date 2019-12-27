@@ -109,8 +109,8 @@ public class RightStrafePark extends LinearOpMode {
     waitForStart();
 
     if (opModeIsActive()) {
-      Encoder_Function(FORWARD, 500, 0.3);
-      Encoder_Function(LEFT, 500, 0.3);
+      Encoder_Function(FORWARD, 50, 0.5);
+      Encoder_Function(RIGHT, 550, 0.5);
       // Encoder_Function(BACKWARD, 1000, 0.3);
     }
 
