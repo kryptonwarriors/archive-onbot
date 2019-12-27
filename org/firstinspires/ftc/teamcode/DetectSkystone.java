@@ -50,8 +50,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
-
-
 @Autonomous(name = "DetectSkystone", group = "")
 public class DetectSkystone extends LinearOpMode {
 
@@ -201,15 +199,15 @@ public class DetectSkystone extends LinearOpMode {
 
     if (opModeIsActive()) {
       targetsSkyStone.activate();
-      Encoder_Function(FORWARD, 400, 0.3);
+      /*Encoder_Function(FORWARD, 400, 0.3);
       Encoder_Function(LEFT, 300, 0.3);
       LeftForward.setPower(-0.3);
       RightForward.setPower(-0.3);
       LeftBack.setPower(-0.3);
-      RightBack.setPower(-0.3);
+      RightBack.setPower(-0.3); */
       
       String SkyStonePos = "";
-        while (opModeIsActive() && !(SkyStonePos == "Center")) {
+        while (opModeIsActive()) {
 
             // check all the trackable targets to see which one (if any) is visible.
             targetVisible = false;

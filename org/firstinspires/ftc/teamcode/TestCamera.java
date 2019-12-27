@@ -134,7 +134,6 @@ public class TestCamera extends LinearOpMode {
     @Override
     public void runOpMode() {
     
-    
     webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
     int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
     VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -145,17 +144,17 @@ public class TestCamera extends LinearOpMode {
     vuforia = ClassFactory.getInstance().createVuforia(parameters);
     VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
     VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
-        stoneTarget.setName("SkyStone Target");
+    stoneTarget.setName("SkyStone Target");
     
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
-        allTrackables.addAll(targetsSkyStone);
+    allTrackables.addAll(targetsSkyStone);
     
     stoneTarget.setLocation(OpenGLMatrix
                 .translation(0, 0, stoneZ)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
 
     final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
-    final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
+    final float CAMERA_VERTICAL_DISPLACEMENT = 2.0f * mmPerInch;   // eg: Camera is 2 Inches above ground
     final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
 
     OpenGLMatrix robotFromCamera = OpenGLMatrix
@@ -187,6 +186,9 @@ public class TestCamera extends LinearOpMode {
     RightFoundation = hardwareMap.servo.get("RightFoundation");
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
+    
+     String SkyStonePos = "";
+     
 
     LeftForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     RightForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -199,32 +201,52 @@ public class TestCamera extends LinearOpMode {
     waitForStart();
 
     if (opModeIsActive()) {
+      
       targetsSkyStone.activate();
       
-      LeftForward.setPower(-0.4);
-      RightForward.setPower(-0.4);
-      LeftBack.setPower(-0.4);
-      RightBack.setPower(-0.4);
-      while(BackDistance.getDistance(DistanceUnit.INCH) <= 24) {
+      LeftForward.setPower(-0.18);
+      RightForward.setPower(0.18);
+      LeftBack.setPower(0.18);
+      RightBack.setPower(-0.18);
+      
+      targetVisible = false;
+      while(opModeIsActive() && BackDistance.getDistance(DistanceUnit.INCH) <= 15  ) {
+      
         telemetry.addData("range", String.format("%.01f in", BackDistance.getDistance(DistanceUnit.INCH)));
         telemetry.update();
       }
       
-      Encoder_Function(LEFT, 300, 0.4);
-      LeftForward.setPower(-0.3);
-      RightForward.setPower(-0.3);
-      LeftBack.setPower(-0.3);
-      RightBack.setPower(-0.3);
+      LeftForward.setPower(0);
+      RightForward.setPower(0);
+      LeftBack.setPower(0);
+      RightBack.setPower(0);
       
-      String SkyStonePos = "";
-        while (opModeIsActive()) {
+      for (VuforiaTrackable trackable : allTrackables) {
+        if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+            telemetry.addData("range", String.format("%.01f in", BackDistance.getDistance(DistanceUnit.INCH)));
+            telemetry.addData("Visible Target", trackable.getName());
+            telemetry.update();
+            targetVisible = true;
+            break;
+        }
+      }
 
-            // check all the trackable targets to see which one (if any) is visible.
-            targetVisible = false;
-            for (VuforiaTrackable trackable : allTrackables) {
-                if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                    telemetry.addData("Visible Target", trackable.getName());
-                    targetVisible = true;
+  
+      sleep(20000);
+      
+      LeftForward.setPower(-0.27);
+      RightForward.setPower(-0.27);
+      LeftBack.setPower(-0.27);
+      RightBack.setPower(-0.27);
+      
+      while (opModeIsActive() && !(SkyStonePos == "Center")) {
+
+          // check all the trackable targets to see which one (if any) is visible.
+          targetVisible = false;
+          for (VuforiaTrackable trackable : allTrackables) {
+            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+                  telemetry.addData("Visible Target", trackable.getName());
+                  targetVisible = true;
 
                     // getUpdatedRobotLocation() will return null if no new information is available since
                     // the last time that call was made, or if the trackable is not currently visible.
@@ -244,12 +266,12 @@ public class TestCamera extends LinearOpMode {
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
-                        double yPos = translation.get(1)/mmPerInch;
+                  double yPos = translation.get(1)/mmPerInch;
                   if (yPos > -1 && yPos < 1) {
                           SkyStonePos = "Center";
-                  } else if (yPos > 1) {
+                  } else if (yPos > 1.3) {
                           SkyStonePos = "Left";
-                  } else if (yPos <-1) {
+                  } else if (yPos <-0.8) {
                           SkyStonePos = "Right";
                   }
                         telemetry.addData("SkyStonePosition", SkyStonePos);
@@ -264,10 +286,7 @@ public class TestCamera extends LinearOpMode {
             telemetry.update();
         }
       
-      LeftForward.setPower(0);
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      RightBack.setPower(0);
+      
       
     }
     targetsSkyStone.deactivate();
