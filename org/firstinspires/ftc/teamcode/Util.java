@@ -9,6 +9,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 
 // SERVO
@@ -21,6 +27,11 @@ import android.app.Activity;
 import java.util.Locale;
 import android.view.View;
 import android.graphics.Color;
+
+// SENSORS
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+
 
 public class Util {
 
@@ -39,6 +50,9 @@ public static DcMotor LinearActuator = null;
 public static DcMotor LeftCascade = null;
 public static DcMotor RightCascade = null;
 
+// SENSORS
+public BNO055IMU IMU;
+
 // MISC VARIABLES.
 public static int THRESH = 15;
 public static int TURNTHRESH = 30;
@@ -52,7 +66,7 @@ public Util(Servo inLeftFoundation, Servo inRightFoundation,
             DcMotor inLeftForward, DcMotor inLeftBack,
             DcMotor inRightForward, DcMotor inRightBack,
             DcMotor inLinearActuator, DcMotor inLeftCascade,
-            DcMotor inRightCascade )
+            DcMotor inRightCascade, BNO055IMU inIMU)
 {
     // SERVO
     LeftFoundation = inLeftFoundation;
@@ -68,6 +82,9 @@ public Util(Servo inLeftFoundation, Servo inRightFoundation,
     LinearActuator = inLinearActuator;
     LeftCascade = inLeftCascade;
     RightCascade = inRightCascade;
+
+    // SENSORS
+    IMU = inIMU;
 
 }
 
@@ -197,4 +214,4 @@ public static void Extend ( int Direction, int Power ) throws InterruptedExcepti
 }
 
 }
-// BY RAHUL & MONI.
+// BY MONI.
