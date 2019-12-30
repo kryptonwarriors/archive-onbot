@@ -40,6 +40,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +92,8 @@ public class DetectSkystone extends LinearOpMode {
     int ALL_THRESH = 15;
     int TURNTHRESH = 30;
     String TapeColor = null;
+    String SkyStonePos = "";
+    double yPos;
 
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false;
@@ -119,6 +122,8 @@ public class DetectSkystone extends LinearOpMode {
     // Class Members
     private OpenGLMatrix lastLocation = null;
     private VuforiaLocalizer vuforia = null;
+    private ElapsedTime runtime = new ElapsedTime();
+
 
     /**
      * This is the webcam we are to use. As with other hardware devices such as motors and
@@ -133,7 +138,7 @@ public class DetectSkystone extends LinearOpMode {
    
     @Override
     public void runOpMode() {
-
+    
     webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
     int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
     VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -144,17 +149,17 @@ public class DetectSkystone extends LinearOpMode {
     vuforia = ClassFactory.getInstance().createVuforia(parameters);
     VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
     VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
-        stoneTarget.setName("SkyStone Target");
+    stoneTarget.setName("SkyStone Target");
     
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
-        allTrackables.addAll(targetsSkyStone);
+    allTrackables.addAll(targetsSkyStone);
     
     stoneTarget.setLocation(OpenGLMatrix
                 .translation(0, 0, stoneZ)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
 
     final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
-    final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
+    final float CAMERA_VERTICAL_DISPLACEMENT = 2.0f * mmPerInch;   // eg: Camera is 2 Inches above ground
     final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
 
     OpenGLMatrix robotFromCamera = OpenGLMatrix
@@ -186,6 +191,8 @@ public class DetectSkystone extends LinearOpMode {
     RightFoundation = hardwareMap.servo.get("RightFoundation");
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
+    
+     
 
     LeftForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     RightForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -194,72 +201,86 @@ public class DetectSkystone extends LinearOpMode {
 
     telemetry.addData(">", "INIT DONE");
     telemetry.update();
-
+    runtime.reset();
     waitForStart();
 
     if (opModeIsActive()) {
-      targetsSkyStone.activate();
-      /*Encoder_Function(FORWARD, 400, 0.3);
-      Encoder_Function(LEFT, 300, 0.3);
-      LeftForward.setPower(-0.3);
-      RightForward.setPower(-0.3);
-      LeftBack.setPower(-0.3);
-      RightBack.setPower(-0.3); */
       
-      String SkyStonePos = "";
-        while (opModeIsActive()) {
-
-            // check all the trackable targets to see which one (if any) is visible.
-            targetVisible = false;
-            for (VuforiaTrackable trackable : allTrackables) {
-                if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                    telemetry.addData("Visible Target", trackable.getName());
-                    targetVisible = true;
-
-                    // getUpdatedRobotLocation() will return null if no new information is available since
-                    // the last time that call was made, or if the trackable is not currently visible.
-                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
-                    if (robotLocationTransform != null) {
-                        lastLocation = robotLocationTransform;
-                    }
-                    break;
-                }
-            }
-
-
-            // Provide feedback as to where the robot is located (if we know).
-            if (targetVisible) {
-                // express position (translation) of robot in inches.
-                VectorF translation = lastLocation.getTranslation();
-                telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-
-                        double yPos = translation.get(1);
-                  if (yPos < -6.50) {
-                          SkyStonePos = "Right";
-                  } else if (yPos > 8) {
-                          SkyStonePos = "Left";
-                  } else {
-                          SkyStonePos = "Center";
-                  }
-                        telemetry.addData("SkyStonePosition", SkyStonePos);
-                        telemetry.addData("yPos", yPos);
-                // express the rotation of the robot in degrees.
-                Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
-            }
-            else {
-                telemetry.addData("Visible Target", "none");
-            }
-            telemetry.update();
-        }
+      targetsSkyStone.activate();
+      
+      LeftForward.setPower(-0.18);
+      RightForward.setPower(0.18);
+      LeftBack.setPower(0.18);
+      RightBack.setPower(-0.18);
+      
+      targetVisible = false;
+      while(opModeIsActive() && BackDistance.getDistance(DistanceUnit.INCH) <= 18  ) {
+      
+        telemetry.addData("range", String.format("%.01f in", BackDistance.getDistance(DistanceUnit.INCH)));
+        telemetry.addData("RunTime", runtime.seconds());
+        telemetry.update();
+      }
       
       LeftForward.setPower(0);
       RightForward.setPower(0);
       LeftBack.setPower(0);
       RightBack.setPower(0);
       
+      runtime.reset();
+      while (opModeIsActive() && (!(targetVisible) && runtime.seconds() < 1)){ 
+        for (VuforiaTrackable trackable : allTrackables) {
+          if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+              targetVisible = true;
+              telemetry.addData("range", String.format("%.01f in", BackDistance.getDistance(DistanceUnit.INCH)));
+              telemetry.addData("Visible Target", trackable.getName());
+              telemetry.update();
+              
+              break;
+            }
+        }
+      }
+
+ if (targetVisible) {
+    telemetry.addData("TargetVisible yayy", targetVisible);
+    telemetry.update();
+    telemetry.addData("yPos", yPos);
+    sleep(5000);
+    actualAdjust();
+ } else {
+    telemetry.addData("TargetVisble Variable", targetVisible);
+    telemetry.update();
+    sleep(2000);
+      Encoder_Function(RIGHT, 280, 0.3);
+      targetVisible = false;
+            // Provide feedback as to where the robot is located (if we know).
+            SkyStonePos = "";
+            checkForSkystone();
+            sleep(800);
+            telemetry.addData("TargetVisible", targetVisible);
+            telemetry.update();
+            
+           
+           if(targetVisible) {
+            telemetry.addData("TargetVisible yayy", targetVisible);
+            telemetry.addData("yPos", yPos);
+            telemetry.update();
+             sleep(5000);
+             actualAdjust();
+           }
+           else {
+          Encoder_Function(RIGHT, 150, 0.3);
+          runtime.reset();
+          
+}
+            // Provide feedback as to where the robot is located (if we know).
+            SkyStonePos = "";
+            checkForSkystone();
+            
+        }
     }
+      
+      
+    
     targetsSkyStone.deactivate();
     
   } //End of opmode
@@ -351,5 +372,94 @@ public class DetectSkystone extends LinearOpMode {
 
   } // End of function
 
+private void checkForSkystone() {
+  if (targetVisible) {
+                // express position (translation) of robot in inches.
+                VectorF translation = lastLocation.getTranslation();
+                telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+
+                  yPos = translation.get(1)/mmPerInch;
+                  if (yPos > -1 && yPos < 1) {
+                          SkyStonePos = "Center";
+                  } else if (yPos > 1.3) {
+                          SkyStonePos = "Left";
+                  } else if (yPos <-0.8) {
+                          SkyStonePos = "Right";
+                  }
+                        telemetry.addData("SkyStonePosition", SkyStonePos);
+                        telemetry.addData("yPos", yPos);
+                // express the rotation of the robot in degrees.
+                Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+                telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+            }
+            else {
+                telemetry.addData("Visible Target", "none");
+            }
+            telemetry.update();
+  
+}
+
+private void adjust() {
+  if (SkyStonePos == "Center") {
+              Encoder_Function(FORWARD, 400, 0.3);
+            }
+            else if (SkyStonePos == "Left") {
+              LeftForward.setPower(-0.27);
+              RightForward.setPower(-0.27);
+              LeftBack.setPower(-0.27);
+              RightBack.setPower(-0.27);
+              while (!(SkyStonePos == "Center")){
+                telemetry.addData("yPos", yPos);
+                telemetry.update();
+              }
+              LeftForward.setPower(0);
+              RightForward.setPower(0);
+              LeftBack.setPower(0);
+              RightBack.setPower(0);
+              Encoder_Function(FORWARD, 400, 0.3);
+            }
+            else if (SkyStonePos == "Right") {
+              LeftForward.setPower(0.27);
+              RightForward.setPower(0.27);
+              LeftBack.setPower(0.27);
+              RightBack.setPower(0.27);
+              while (!(SkyStonePos == "Center")){
+                telemetry.addData("yPos", yPos);
+                telemetry.update();
+              }
+              LeftForward.setPower(0);
+              RightForward.setPower(0);
+              LeftBack.setPower(0);
+              RightBack.setPower(0);
+              
+              Encoder_Function(FORWARD, 400, 0.3);
+            }
+}
+
+private void actualAdjust() {
+  
+  if(SkyStonePos == "Center") {
+    Encoder_Function(FORWARD, 400, 0.3);
+  }
+  else if(SkyStonePos == "Left") {
+    int moveRight = (int)Math.abs(yPos - 1.3) * 50;
+    telemetry.addData("right", moveRight);
+    telemetry.update();
+    Encoder_Function(RIGHT, moveRight, 0.3);
+    Encoder_Function(FORWARD, 400, 0.3);
+  }
+  else if(SkyStonePos == "Right") {
+    int moveLeft = (int)Math.abs(0.8 - yPos) * 50;
+    telemetry.addData("left", moveLeft);
+    telemetry.update();
+    Encoder_Function(LEFT, moveLeft, 0.3);
+    Encoder_Function(FORWARD, 400, 0.3);
+  }
+  
+  
+}
+
 } //End of Class
+
 

@@ -105,14 +105,14 @@ public class TheTeleOp extends LinearOpMode {
       }
       if (gamepad2.a == true) {
         LeftClamp.setPosition(0.8);
-        RightClamp.setPosition(0.2);
+        RightClamp.setPosition(0.3);
           // Clamp in & CLOSE
-        }
+      }
       if (gamepad2.b == true) {
         LeftClamp.setPosition(0.7);
-        RightClamp.setPosition(0.5);
+        RightClamp.setPosition(0.4);
           // Clamp out & OPEN
-        }
+      }
       if (gamepad2.x == true) {
           LeftFoundation.setPosition(0.28);
           RightFoundation.setPosition(0.72);

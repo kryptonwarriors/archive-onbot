@@ -51,7 +51,7 @@ public static DcMotor LeftCascade = null;
 public static DcMotor RightCascade = null;
 
 // SENSORS
-public BNO055IMU IMU;
+public static BNO055IMU IMU;
 
 // MISC VARIABLES.
 public static int THRESH = 15;
@@ -171,6 +171,11 @@ public static void PickStone ( boolean Clamp ) throws InterruptedException {
     RightClamp.setPosition(0.5);
     }
 }
+
+public static void IMUFunction ( double time, double Power, int Direction ) {
+
+}
+
 /*
 public static void Cascade ( int Level, int Power) throws InterruptedException {
     int reset = 0;
@@ -202,6 +207,7 @@ public static void Cascade ( int Level, int Power) throws InterruptedException {
     }
 }
 */
+
 public static void Extend ( int Direction, int Power ) throws InterruptedException {
     int Retract = 0;
     int Extend = 1;

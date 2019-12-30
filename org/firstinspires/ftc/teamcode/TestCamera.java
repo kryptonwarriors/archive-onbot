@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -74,24 +75,26 @@ public class TestCamera extends LinearOpMode {
     private TouchSensor LFBumper;
     private TouchSensor RFBumper;
     private HardwareDevice webcam_1;
-    private Gyroscope imu_1;
-    private Gyroscope imu;
+    private BNO055IMU   imu_1;
+    private BNO055IMU   imu;
 
 
-    int FORWARD = 0;
-    int BACKWARD = 1;
-    int LEFT = 2;
-    int RIGHT = 3;
-    int UP = 4;
-    int WALL = 5;
-    int RTurn = 6;
-    int LTurn = 7;
-    int EXTEND = 8;
-    int RETRACT = 9;
+    final int FORWARD = 0;
+    final int BACKWARD = 1;
+    final int LEFT = 2;
+    final int RIGHT = 3;
+    final int UP = 4;
+    final int WALL = 5;
+    final int RTurn = 6;
+    final int LTurn = 7;
+    final int EXTEND = 8;
+    final int RETRACT = 9;
     int THRESH = 15;
-    int ALL_THRESH = 15;
-    int TURNTHRESH = 30;
+    final int ALL_THRESH = 15;
+    final int TURNTHRESH = 30;
     String TapeColor = null;
+    String SkyStonePos = "";
+    double yPos = 0;
 
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false;
@@ -122,7 +125,10 @@ public class TestCamera extends LinearOpMode {
     private VuforiaLocalizer vuforia = null;
     private ElapsedTime runtime = new ElapsedTime();
 
-
+    PIDController pidDrive;
+    double        globalAngle, correction;
+    Orientation   lastAngles = new Orientation();
+    
     /**
      * This is the webcam we are to use. As with other hardware devices such as motors and
      * servos, this device is identified using the robot configuration tool in the FTC application.
@@ -190,19 +196,44 @@ public class TestCamera extends LinearOpMode {
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
     
-     
-
     LeftForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     RightForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     LeftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     RightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+    LeftClamp.setPosition(0.7);
+    RightClamp.setPosition(0.4);
+    
+    BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
+    imuParameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+    imuParameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+    imuParameters.loggingEnabled      = false;
+    imu.initialize(imuParameters);
+    
+    // make sure the imu gyro is calibrated before continuing.
+    while (!isStopRequested() && !imu.isGyroCalibrated())
+    {
+        sleep(50);
+        idle();
+    }
+
     telemetry.addData(">", "INIT DONE");
     telemetry.update();
-runtime.reset();
+    runtime.reset();
     waitForStart();
 
     if (opModeIsActive()) {
+      
+      
+      pidDrive = new PIDController(.05, 0, 0);
+      pidDrive.setSetpoint(0);
+      pidDrive.setOutputRange(0, 0.6);
+      pidDrive.setInputRange(-90, 90);
+      pidDrive.enable();
+        
+      EncoderPID(LEFT, 1000, 0.6);
+      sleep(25000);
+      
       
       targetsSkyStone.activate();
       
@@ -212,8 +243,7 @@ runtime.reset();
       RightBack.setPower(-0.18);
       
       targetVisible = false;
-      while(opModeIsActive() && BackDistance.getDistance(DistanceUnit.INCH) <= 16  ) {
-      
+      while(opModeIsActive() && BackDistance.getDistance(DistanceUnit.INCH) <= 18  ) {
         telemetry.addData("range", String.format("%.01f in", BackDistance.getDistance(DistanceUnit.INCH)));
         telemetry.addData("RunTime", runtime.seconds());
         telemetry.update();
@@ -229,82 +259,150 @@ runtime.reset();
         for (VuforiaTrackable trackable : allTrackables) {
           if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
               targetVisible = true;
+              // getUpdatedRobotLocation() will return null if no new information is available since
+              // the last time that call was made, or if the trackable is not currently visible.
+              OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+              if (robotLocationTransform != null) {
+                lastLocation = robotLocationTransform;
+              }
               telemetry.addData("range", String.format("%.01f in", BackDistance.getDistance(DistanceUnit.INCH)));
               telemetry.addData("Visible Target", trackable.getName());
               telemetry.update();
-              
               break;
-            }
+          }
         }
       }
 
-
-    telemetry.addData("TargetVisble Variable", targetVisible);
-    telemetry.update();
-    sleep(2000);
-      Encoder_Function(RIGHT, 300, 0.3);
-      targetVisible = false;
-      runtime.reset();
-          while(!(targetVisible) && opModeIsActive() && runtime.seconds() < 1) {
+      if (!targetVisible) {
+        Encoder_Function(RIGHT, 240, 0.3);
+        runtime.reset();
+        while (opModeIsActive() && (!(targetVisible) && runtime.seconds() < 1)){ 
           for (VuforiaTrackable trackable : allTrackables) {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                  telemetry.addData("Visible Target", trackable.getName());
-                  targetVisible = true;
-
-                    // getUpdatedRobotLocation() will return null if no new information is available since
-                    // the last time that call was made, or if the trackable is not currently visible.
-                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
-                    if (robotLocationTransform != null) {
-                        lastLocation = robotLocationTransform;
-                    }
-                    break;
+                targetVisible = true;
+                // getUpdatedRobotLocation() will return null if no new information is available since
+                // the last time that call was made, or if the trackable is not currently visible.
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                if (robotLocationTransform != null) {
+                  lastLocation = robotLocationTransform;
                 }
+  
+                telemetry.addData("Visible Target", trackable.getName());
+                telemetry.update();
+                break;
             }
           }
-
-            // Provide feedback as to where the robot is located (if we know).
-            checkForSkystone();
-            
-            Encoder_Function(RIGHT, 300, 0.3);
-          targetVisible = false;
-          runtime.reset();
-          while(!(targetVisible) && opModeIsActive() && runtime.seconds() < 1) {
-          for (VuforiaTrackable trackable : allTrackables) {
-            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                  telemetry.addData("Visible Target", trackable.getName());
-                  targetVisible = true;
-
-                    // getUpdatedRobotLocation() will return null if no new information is available since
-                    // the last time that call was made, or if the trackable is not currently visible.
-                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
-                    if (robotLocationTransform != null) {
-                        lastLocation = robotLocationTransform;
-                    }
-                    break;
-                }
-            }
-          }
-
-            // Provide feedback as to where the robot is located (if we know).
-            checkForSkystone();
         }
+      }
       
+      if (!targetVisible) {
+        Encoder_Function(RIGHT, 240, 0.3);
+        runtime.reset();
+        while (opModeIsActive() && (!(targetVisible) && runtime.seconds() < 1)){ 
+          for (VuforiaTrackable trackable : allTrackables) {
+            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+                targetVisible = true;
+                // getUpdatedRobotLocation() will return null if no new information is available since
+                // the last time that call was made, or if the trackable is not currently visible.
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                if (robotLocationTransform != null) {
+                  lastLocation = robotLocationTransform;
+                }
+  
+                telemetry.addData("Visible Target", trackable.getName());
+                telemetry.update();
+                break;
+            }
+          }
+        }
+      }
       
-      
+      telemetry.update();
+      if (targetVisible) {
+        // Provide feedback as to where the robot is located (if we know).
+        SkyStonePos = "";
+        checkForSkystone();
+        sleep(3000);
+        actualAdjust();
+      } 
     
-    targetsSkyStone.deactivate();
+      targetsSkyStone.deactivate();
+      sleep(1000);
+      //pick up either skystone or stone
+ 
+    LinearActuator.setPower(-0.2);
+    sleep(800);
+    LinearActuator.setPower(0);
+    
+    LeftClamp.setPosition(0.8);
+    RightClamp.setPosition(0.3);
+    
+    RightCascade.setPower(0.2);
+    LeftCascade.setPower(0.2);
+    sleep(300);
+    RightCascade.setPower(0);
+    LeftCascade.setPower(0);
+    
+    LeftForward.setPower(0.18);
+     RightForward.setPower(-0.18);
+      LeftBack.setPower(-0.18);
+      RightBack.setPower(0.18);
+      RightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      
+      targetVisible = false;
+      while(opModeIsActive() && BackDistance.getDistance(DistanceUnit.INCH) >= 26 || RightBack.getCurrentPosition()>400 ) {
+        telemetry.addData("range", String.format("%.01f in", BackDistance.getDistance(DistanceUnit.INCH)));
+        telemetry.addData("RunTime", runtime.seconds());
+        telemetry.update();
+      }
+      
+      LeftForward.setPower(0);
+      RightForward.setPower(0);
+      LeftBack.setPower(0);
+      RightBack.setPower(0);
+    
+    RightCascade.setPower(-0.2);
+    LeftCascade.setPower(-0.2);
+    sleep(400);
+    RightCascade.setPower(0);
+    LeftCascade.setPower(0);
+    
+    Encoder_Function(LEFT, 1000, 0.4);
+    
+    
+    } // end of if opmode active
+      
     
   } //End of opmode
 
-  private void Encoder_Function(int Direction, int TargetPosition, double Power)
+  /**
+   * Get current cumulative angle rotation from last reset.
+   * @return Angle in degrees. + = left, - = right from zero point.
+   */
+  private double getAngle()
   {
-    int FORWARD = 0;
-    int BACKWARD = 1;
-    int LEFT = 2;
-    int RIGHT = 3;
-    int RTurn = 6;
-    int LTurn = 7;
+      // We experimentally determined the Z axis is the axis we want to use for heading angle.
+      // We have to process the angle because the imu works in euler angles so the Z axis is
+      // returned as 0 to +180 or 0 to -180 rolling back to -179 or +179 when rotation passes
+      // 180 degrees. We detect this transition and track the total cumulative angle of rotation.
 
+      Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+      double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
+
+      if (deltaAngle < -180)
+          deltaAngle += 360;
+      else if (deltaAngle > 180)
+          deltaAngle -= 360;
+
+      globalAngle += deltaAngle;
+
+      lastAngles = angles;
+
+      return globalAngle;
+  }
+  
+  private void StopAndReset(){
     LeftForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     RightForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     LeftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -314,7 +412,51 @@ runtime.reset();
     RightForward.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     LeftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     RightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+  
+  }
+  
+  private void EncoderPID(int Direction, int TargetPosition, double Power) {
+    
+    StopAndReset();
+    while ( Math.abs(LeftForward.getCurrentPosition()) <=  Math.abs(TargetPosition)  && !isStopRequested() ) {
+      
+      correction = pidDrive.performPID(getAngle());
+    
+      if (Direction == LEFT) {
+        LeftForward.setPower(Power-correction);
+        LeftBack.setPower(Power-correction);
+        RightForward.setPower(Power+correction);
+        RightBack.setPower(Power+correction);
+      }
+      else if (Direction == RIGHT) {
+        LeftForward.setPower(-Power+correction);
+        LeftBack.setPower(-Power+correction);
+        RightForward.setPower(-Power-correction);
+        RightBack.setPower(-Power-correction);
+      }
+   
+      telemetry.addData("Direction", Direction);
+      telemetry.addData("key", "moving");
+      telemetry.addData("LFCurrentPosition", LeftForward.getCurrentPosition());
+      telemetry.addData("LFTargetPosition", -TargetPosition);
+      telemetry.addData("RFCurrentPosition", RightForward.getCurrentPosition());
+      telemetry.addData("RFTargetPosition", TargetPosition);
+      telemetry.addData("LBCurrentPosition", LeftBack.getCurrentPosition());
+      telemetry.addData("LBTargetPosition", TargetPosition);
+      telemetry.addData("RBCurrentPosition", RightBack.getCurrentPosition());
+      telemetry.addData("RBTargetPosition", -TargetPosition);
+      telemetry.update();
+    }
+  
+    StopDrive();
+    
+  }
+  
+  
+  private void Encoder_Function(int Direction, int TargetPosition, double Power)
+  {
+    StopAndReset();
+   
     THRESH = ALL_THRESH;
     if (Direction == FORWARD) {
       RightForward.setPower(Power);
@@ -372,45 +514,110 @@ runtime.reset();
           telemetry.addData("RBTargetPosition", -TargetPosition);
           telemetry.update();
     }
-
-    LeftBack.setPower(0.0);
-    LeftForward.setPower(0.0);
-    RightForward.setPower(0.0);
-    RightBack.setPower(0.0);
-    telemetry.addData("Zero", "Motors stopped");
-    telemetry.update();
-    sleep(200);
-
+  
+    StopDrive();
+ 
   } // End of function
 
-private void checkForSkystone() {
-  String SkyStonePos = "";
-  if (targetVisible) {
-                // express position (translation) of robot in inches.
-                VectorF translation = lastLocation.getTranslation();
-                telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+  private void StopDrive()
+  {
+      LeftBack.setPower(0.0);
+      LeftForward.setPower(0.0);
+      RightForward.setPower(0.0);
+      RightBack.setPower(0.0);
+      telemetry.addData("Zero", "Motors stopped");
+      telemetry.update();
+      sleep(200);  
+  }
 
-                  double yPos = translation.get(1)/mmPerInch;
-                  if (yPos > -1 && yPos < 1) {
-                          SkyStonePos = "Center";
-                  } else if (yPos > 1.3) {
-                          SkyStonePos = "Left";
-                  } else if (yPos <-0.8) {
-                          SkyStonePos = "Right";
-                  }
-                        telemetry.addData("SkyStonePosition", SkyStonePos);
-                        telemetry.addData("yPos", yPos);
-                // express the rotation of the robot in degrees.
-                Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
-            }
-            else {
-                telemetry.addData("Visible Target", "none");
-            }
-            telemetry.update();
+private void checkForSkystone() {
+  
+  if (targetVisible) {
+  
+    
+    // express position (translation) of robot in inches.
+    VectorF translation = lastLocation.getTranslation();
+    telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+      translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+      yPos = translation.get(1)/mmPerInch;
+      if (yPos >=-0.7 && yPos <= 1.1) {
+          SkyStonePos = "Center";
+      } 
+      else if (yPos > 1.1) {
+        SkyStonePos = "Left";
+      } 
+      else if (yPos <-0.7) {
+        SkyStonePos = "Right";
+      }
+    telemetry.addData("SkyStonePosition", SkyStonePos);
+    telemetry.addData("yPos", yPos);
+    // express the rotation of the robot in degrees.
+    Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+    telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+  }
+  else {
+          telemetry.addData("Visible Target", "none");
+  }
+  telemetry.update();
+}
+
+private void adjust() {
+  if (SkyStonePos == "Center") {
+      Encoder_Function(FORWARD, 400, 0.2);
+    }
+    else if (SkyStonePos == "Left") {
+      LeftForward.setPower(-0.27);
+      RightForward.setPower(-0.27);
+      LeftBack.setPower(-0.27);
+      RightBack.setPower(-0.27);
+      while (!(SkyStonePos == "Center")){
+        telemetry.addData("yPos", yPos);
+        telemetry.update();
+      }
+      LeftForward.setPower(0);
+      RightForward.setPower(0);
+      LeftBack.setPower(0);
+      RightBack.setPower(0);
+      Encoder_Function(FORWARD, 400, 0.2);
+    }
+    else if (SkyStonePos == "Right") {
+      LeftForward.setPower(0.27);
+      RightForward.setPower(0.27);
+      LeftBack.setPower(0.27);
+      RightBack.setPower(0.27);
+      while (!(SkyStonePos == "Center")){
+        telemetry.addData("yPos", yPos);
+        telemetry.update();
+      }
+      LeftForward.setPower(0);
+      RightForward.setPower(0);
+      LeftBack.setPower(0);
+      RightBack.setPower(0);
+      
+      Encoder_Function(FORWARD, 400, 0.2);
+    }
+}
+
+private void actualAdjust() {
+  
+  if(SkyStonePos == "Left") {
+    int moveRight = ((int)Math.abs(yPos - 1.1) * 21) + 80;
+    telemetry.addData("right", moveRight);
+    telemetry.update();
+    Encoder_Function(RIGHT, moveRight, 0.3);
+  }
+  else if(SkyStonePos == "Right") {
+    int moveLeft = ((int)Math.abs(0.7 - yPos) * 21) + 80;
+    telemetry.addData("left", moveLeft);
+    telemetry.update();
+    Encoder_Function(LEFT, moveLeft, 0.3);
+  }
+  
+  //robot is at the center of the skystone
+  Encoder_Function(FORWARD, 400, 0.25);
   
 }
 
 } //End of Class
+
 

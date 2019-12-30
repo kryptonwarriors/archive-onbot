@@ -73,22 +73,22 @@ public class REDFoundationPark extends LinearOpMode {
     int TURNTHRESH = 30;
     String TapeColor = null;
 
-   
+
     @Override
     public void runOpMode() {
 
-    
+
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     RightForward = hardwareMap.dcMotor.get("RightForward");
     LeftBack = hardwareMap.dcMotor.get("LeftBack");
     RightBack = hardwareMap.dcMotor.get("RightBack");
-    
+
     LinearActuator = hardwareMap.dcMotor.get("LinearActuator");
     LeftCascade = hardwareMap.dcMotor.get("LeftCascade");
     RightCascade = hardwareMap.dcMotor.get("RightCascade");
 
     Color = hardwareMap.get(ColorSensor.class, "Color");
-    
+
     BackDistance = hardwareMap.get(DistanceSensor.class, "BackDistance");
     LFBumper = hardwareMap.get(RevTouchSensor.class, "LFBumper");
     RFBumper = hardwareMap.get(RevTouchSensor.class, "RFBumper");
@@ -103,6 +103,9 @@ public class REDFoundationPark extends LinearOpMode {
     LeftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     RightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+    LeftFoundation.setPosition(0.80);
+    RightFoundation.setPosition(0.22);
+
     telemetry.addData(">", "INIT DONE");
     telemetry.update();
 
@@ -110,7 +113,53 @@ public class REDFoundationPark extends LinearOpMode {
 
     if (opModeIsActive()) {
 
-      Encoder_Function(BACKWARD, 700, 0.5);
+      Encoder_Function(BACKWARD, 650, 0.3);
+      sleep(500);
+      Encoder_Function(LEFT, 250, 0.3);
+
+      LeftFoundation.setPosition(0.28);
+      RightFoundation.setPosition(0.72);
+
+      sleep(500);
+      RightForward.setPower(0.4);
+      LeftBack.setPower(0.4);
+      LeftForward.setPower(-0.4);
+      RightBack.setPower(-0.4);
+      while (! (LFBumper.isPressed() || RFBumper.isPressed()) ) {
+        telemetry.addData(">", LFBumper.isPressed());
+        telemetry.addData(">", RFBumper.isPressed());
+        telemetry.update();
+      }
+      RightForward.setPower(0);
+      LeftBack.setPower(0);
+      LeftForward.setPower(0);
+      RightBack.setPower(0);
+
+      sleep(500);
+
+      LeftFoundation.setPosition(0.80);
+      RightFoundation.setPosition(0.22);
+
+      Encoder_Function(RIGHT, 700, 0.4);
+
+      RightForward.setPower(0.3);
+      LeftBack.setPower(0.3);
+      LeftForward.setPower(-0.3);
+      RightBack.setPower(-0.3);
+
+      while (! (LFBumper.isPressed() || RFBumper.isPressed()) ) {
+        telemetry.addData(">", "Not Touching");
+        telemetry.update();
+      }
+      Encoder_Function(RIGHT, 300, 0.4);
+
+      RightForward.setPower(0);
+      LeftBack.setPower(0);
+      LeftForward.setPower(0);
+      RightBack.setPower(0);
+
+      telemetry.addData(">", "OP MODE DONE");
+      telemetry.update();
     }
 
   } //End of opmode
@@ -174,7 +223,7 @@ public class REDFoundationPark extends LinearOpMode {
       RightBack.setPower(Power);
     }
 
-    while ( ( (Math.abs(Math.abs(LeftBack.getCurrentPosition()) - Math.abs(TargetPosition)) > THRESH)
+    while ( ( (Math.abs(Math.abs(LeftForward.getCurrentPosition()) - Math.abs(TargetPosition)) > THRESH)
             )
             && !isStopRequested()
           )
@@ -198,7 +247,6 @@ public class REDFoundationPark extends LinearOpMode {
     RightBack.setPower(0.0);
     telemetry.addData("Zero", "Motors stopped");
     telemetry.update();
-
   } // End of function
 
 } //End of Class
