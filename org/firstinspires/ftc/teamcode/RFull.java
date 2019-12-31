@@ -20,7 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaSkyStone;
 import org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone;
 import java.util.List;
 
-@Autonomous(name = "RFull (Blocks to Java)", group = "")
+@Autonomous(name = "RFull", group = "")
 public class RFull extends LinearOpMode {
 
   private DcMotor LeftForward;
@@ -62,10 +62,6 @@ public class RFull extends LinearOpMode {
   @Override
   public void runOpMode() {
 
-    //dhriti is the lead of the team
-    //aman is the greatest
-    //muthu and aarav are eh
-
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     RightForward = hardwareMap.dcMotor.get("RightForward");
     LeftBack = hardwareMap.dcMotor.get("LeftBack");
@@ -100,9 +96,6 @@ public class RFull extends LinearOpMode {
         true); // useCompetitionFieldTargetLocations
     // Set min confidence threshold to 0.7
     tfodSkyStone.initialize(vuforiaSkyStone, 0.7F, true, true);
-    // Initialize TFOD before waitForStart.
-    // Init TFOD here so the object detection labels are visible
-    // in the Camera Stream preview window on the Driver Station.
     tfodSkyStone.activate();
 
     LeftFoundation.setPosition(0.68);
@@ -110,7 +103,7 @@ public class RFull extends LinearOpMode {
     LeftClamp.setPosition(1);
     RightClamp.setPosition(0.8);
     telemetry.addData("Distance", BackDistance.getDistance(DistanceUnit.INCH));
-    telemetry.addData(">", "Press Play to start");
+    telemetry.addData(">", "INIT");
     telemetry.update();
     waitForStart();
 

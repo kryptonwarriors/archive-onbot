@@ -57,6 +57,7 @@ public class REDFoundationPark extends LinearOpMode {
     private Gyroscope imu_1;
     private Gyroscope imu;
 
+    private Util util;
 
     int FORWARD = 0;
     int BACKWARD = 1;
@@ -98,13 +99,15 @@ public class REDFoundationPark extends LinearOpMode {
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
 
-    LeftForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    RightForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    LeftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    RightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    util = new Util( LeftFoundation, RightFoundation,
+                    LeftClamp, RightClamp, LeftForward,
+                    LeftBack, RightForward, RightBack,
+                    LinearActuator, LeftCascade, RightCascade,
+                    IMU, Color, BackDistance, RBBumper, RFBumper,
+                    LBBumper, LFBumper);
 
-    LeftFoundation.setPosition(0.80);
-    RightFoundation.setPosition(0.22);
+    util.MotorBRAKE();
+    util.ArmUp();
 
     telemetry.addData(">", "INIT DONE");
     telemetry.update();
@@ -113,12 +116,11 @@ public class REDFoundationPark extends LinearOpMode {
 
     if (opModeIsActive()) {
 
-      Encoder_Function(BACKWARD, 650, 0.3);
+      util.MoveTank(BACKWARD, 650, 0.3);
       sleep(500);
-      Encoder_Function(LEFT, 250, 0.3);
+      util.MoveTank(LEFT, 250, 0.3);
 
-      LeftFoundation.setPosition(0.28);
-      RightFoundation.setPosition(0.72);
+      util.ArmDown();
 
       sleep(500);
       RightForward.setPower(0.4);
@@ -130,17 +132,13 @@ public class REDFoundationPark extends LinearOpMode {
         telemetry.addData(">", RFBumper.isPressed());
         telemetry.update();
       }
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      LeftForward.setPower(0);
-      RightBack.setPower(0);
+      util.StopTank();
 
       sleep(500);
 
-      LeftFoundation.setPosition(0.80);
-      RightFoundation.setPosition(0.22);
+      util.ArmUp();
 
-      Encoder_Function(RIGHT, 700, 0.4);
+      util.MoveTank(RIGHT, 700, 0.4);
 
       RightForward.setPower(0.3);
       LeftBack.setPower(0.3);
@@ -151,103 +149,15 @@ public class REDFoundationPark extends LinearOpMode {
         telemetry.addData(">", "Not Touching");
         telemetry.update();
       }
-      Encoder_Function(RIGHT, 300, 0.4);
+      util.MoveTank(RIGHT, 300, 0.4);
 
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      LeftForward.setPower(0);
-      RightBack.setPower(0);
+      util.StopTank();
 
       telemetry.addData(">", "OP MODE DONE");
       telemetry.update();
     }
 
   } //End of opmode
-
-  private void Encoder_Function(int Direction, int TargetPosition, double Power)
-  {
-    int FORWARD = 0;
-    int BACKWARD = 1;
-    int LEFT = 2;
-    int RIGHT = 3;
-    int RTurn = 6;
-    int LTurn = 7;
-
-    LeftForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    RightForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    LeftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    RightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-    LeftForward.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    RightForward.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    LeftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    RightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-    THRESH = ALL_THRESH;
-    if (Direction == FORWARD) {
-      RightForward.setPower(Power);
-      LeftBack.setPower(Power);
-      LeftForward.setPower(-Power);
-      RightBack.setPower(-Power);
-    }
-    else if (Direction == BACKWARD) {
-      RightForward.setPower(-Power);
-      LeftBack.setPower(-Power);
-      LeftForward.setPower(Power);
-      RightBack.setPower(Power);
-    }
-    else if (Direction == LEFT) {
-      LeftForward.setPower(Power);
-      LeftBack.setPower(Power);
-      RightForward.setPower(Power);
-      RightBack.setPower(Power);
-    }
-    else if (Direction == RIGHT) {
-      LeftForward.setPower(-Power);
-      LeftBack.setPower(-Power);
-      RightForward.setPower(-Power);
-      RightBack.setPower(-Power);
-    }
-    else if (Direction == RTurn) {
-      THRESH = TURNTHRESH;
-      LeftForward.setPower(-Power);
-      LeftBack.setPower(-Power);
-      RightForward.setPower(-Power);
-      RightBack.setPower(-Power);
-    }
-    else if (Direction == LTurn) {
-      THRESH = TURNTHRESH;
-      LeftForward.setPower(Power);
-      LeftBack.setPower(Power);
-      RightForward.setPower(Power);
-      RightBack.setPower(Power);
-    }
-
-    while ( ( (Math.abs(Math.abs(LeftForward.getCurrentPosition()) - Math.abs(TargetPosition)) > THRESH)
-            )
-            && !isStopRequested()
-          )
-    {
-          telemetry.addData("Direction", Direction);
-          telemetry.addData("key", "moving");
-          telemetry.addData("LFCurrentPosition", LeftForward.getCurrentPosition());
-          telemetry.addData("LFTargetPosition", -TargetPosition);
-          telemetry.addData("RFCurrentPosition", RightForward.getCurrentPosition());
-          telemetry.addData("RFTargetPosition", TargetPosition);
-          telemetry.addData("LBCurrentPosition", LeftBack.getCurrentPosition());
-          telemetry.addData("LBTargetPosition", TargetPosition);
-          telemetry.addData("RBCurrentPosition", RightBack.getCurrentPosition());
-          telemetry.addData("RBTargetPosition", -TargetPosition);
-          telemetry.update();
-    }
-
-    LeftBack.setPower(0.0);
-    LeftForward.setPower(0.0);
-    RightForward.setPower(0.0);
-    RightBack.setPower(0.0);
-    telemetry.addData("Zero", "Motors stopped");
-    telemetry.update();
-  } // End of function
 
 } //End of Class
 

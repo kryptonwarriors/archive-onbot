@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-// PID controller courtesy of Peter Tischler, with modifications.
-
 public class PIDController
 {
     private double m_P;                     // factor for "proportional" control

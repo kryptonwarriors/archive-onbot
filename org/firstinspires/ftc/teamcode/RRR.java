@@ -20,7 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaSkyStone;
 import org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone;
 import java.util.List;
 
-@Autonomous(name = "RRR (Blocks to Java)", group = "")
+@Autonomous(name = "RRR", group = "")
 public class RRR extends LinearOpMode {
 
   private DcMotor LeftForward;
@@ -62,10 +62,6 @@ public class RRR extends LinearOpMode {
 
   @Override
   public void runOpMode() {
-
-    //dhriti is the lead of the team
-    //aman is the greatest
-    //muthu and aarav are eh
 
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     RightForward = hardwareMap.dcMotor.get("RightForward");

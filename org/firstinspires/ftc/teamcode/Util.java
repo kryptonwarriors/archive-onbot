@@ -228,7 +228,6 @@ public static void MotorBRAKE () {
   RightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 }
 
-
 public static void StopTank () {
   LeftBack.setPower(0.0);
   LeftForward.setPower(0.0);

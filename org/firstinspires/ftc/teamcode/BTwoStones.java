@@ -19,8 +19,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaSkyStone;
 import org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone;
 import java.util.List;
+import java.util.Locale;
 
-@Autonomous(name = "BTwoStones (Blocks to Java)", group = "")
+
+@Autonomous(name = "BTwoStones", group = "")
 public class BTwoStones extends LinearOpMode {
 
   private DcMotor LeftForward;
@@ -44,6 +46,9 @@ public class BTwoStones extends LinearOpMode {
   private double boxWidth;
   private double boxLeftEdge;
   private double SkystoneCenter;
+
+  private Util util;
+
   int FORWARD = 0;
   int BACKWARD = 1;
   int LEFT = 2;
@@ -59,16 +64,8 @@ public class BTwoStones extends LinearOpMode {
   int ALL_THRESH = 18;
   int TURNTHRESH = 30;
 
-  /**
-   * This function is executed when this Op Mode is selected from the Driver Station.
-   */
   @Override
   public void runOpMode() {
-
-    //varun is the best, better than rahul, but moni is obviously superior
-    //dhriti is the lead of the team
-    //aman is the greatest
-    //muthu and aarav are eh
 
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     RightForward = hardwareMap.dcMotor.get("RightForward");
@@ -109,8 +106,14 @@ public class BTwoStones extends LinearOpMode {
     // in the Camera Stream preview window on the Driver Station.
     tfodSkyStone.activate();
 
-    LeftFoundation.setPosition(0.68);
-    RightFoundation.setPosition(0.22);
+    util = new Util( LeftFoundation, RightFoundation,
+                    LeftClamp, RightClamp, LeftForward,
+                    LeftBack, RightForward, RightBack,
+                    LinearActuator, LeftCascade, RightCascade,
+                    IMU, Color, BackDistance, RBBumper, RFBumper,
+                    LBBumper, LFBumper);
+
+    util.ArmUp();
     LeftClamp.setPosition(1);
     RightClamp.setPosition(0.8);
     telemetry.addData("Distance", BackDistance.getDistance(DistanceUnit.INCH));
@@ -141,13 +144,10 @@ public class BTwoStones extends LinearOpMode {
         telemetry.update();
       }
 
-      LeftForward.setPower(0);
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      RightBack.setPower(0);
+      util.StopTank();
       sleep(200);
 
-      Encoder_Function(LEFT, 900, 0.6);
+      util.MoveTank(LEFT, 900, 0.6);
 
       LeftForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       RightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -163,10 +163,7 @@ public class BTwoStones extends LinearOpMode {
       SkystoneCenter = 1000;
       DetectSkystone(SkystoneCenter);
 
-      LeftForward.setPower(0);
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      RightBack.setPower(0);
+      util.StopTank();
       sleep(200);
 
       int move = Math.abs(LeftForward.getCurrentPosition());
@@ -179,7 +176,7 @@ public class BTwoStones extends LinearOpMode {
 
 
 
-      Encoder_Function(FORWARD, 600, 0.5);
+      util.MoveTank(FORWARD, 600, 0.5);
       LeftClamp.setPosition(0.8);
       RightClamp.setPosition(1);
       sleep(600);
@@ -195,10 +192,10 @@ public class BTwoStones extends LinearOpMode {
       sleep(300);
       LeftCascade.setPower(0);
       RightCascade.setPower(0);
-      Encoder_Function(BACKWARD, 1200, 0.7);
+      util.MoveTank(BACKWARD, 1200, 0.7);
 
       //TODO: Go To Foundation and Drop the Skystone
-      Encoder_Function(LEFT, 4100 + move, 0.8);
+      util.MoveTank(LEFT, 4100 + move, 0.8);
 
       LeftForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       runWithoutEncoders();
@@ -220,10 +217,7 @@ public class BTwoStones extends LinearOpMode {
           telemetry.update();
         }
 
-      LeftForward.setPower(0);
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      RightBack.setPower(0);
+      util.StopTank();
 
       RightCascade.setPower(-0.4);
       LeftCascade.setPower(0.4);
@@ -239,7 +233,7 @@ public class BTwoStones extends LinearOpMode {
       RightClamp.setPosition(1);
       sleep(400);
 
-      Encoder_Function(BACKWARD, 600, 0.7);
+      util.MoveTank(BACKWARD, 600, 0.7);
       RightCascade.setPower(-0.4);
       LeftCascade.setPower(0.4);
       sleep(300);
@@ -249,11 +243,7 @@ public class BTwoStones extends LinearOpMode {
       sleep(700);
       LinearActuator.setPower(0);
 
-      Encoder_Function(LEFT, 2300, 0.8);
-
-      /*tfodSkyStone.deactivate();
-      vuforiaSkyStone.close();
-      tfodSkyStone.close();*/
+      util.MoveTank(LEFT, 2300, 0.8);
 
     }
   }
@@ -303,131 +293,6 @@ public class BTwoStones extends LinearOpMode {
       RightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
   }
 
-  private void Encoder_Function(int Direction, int TargetPosition, double Power)
-  {
-    int FORWARD = 0;
-    int BACKWARD = 1;
-    int LEFT = 2;
-    int RIGHT = 3;
-    int RTurn = 6;
-    int LTurn = 7;
-
-    LeftForward.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    RightForward.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    LeftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    RightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    LeftForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    RightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    LeftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    RightForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    THRESH = ALL_THRESH;
-    if (Direction == FORWARD) {
-
-      LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftForward.setTargetPosition(-TargetPosition);
-      LeftBack.setTargetPosition(-TargetPosition);
-      RightForward.setTargetPosition(TargetPosition);
-      RightBack.setTargetPosition(TargetPosition);
-      LeftBack.setPower(-Power);
-      LeftForward.setPower(-Power);
-      RightForward.setPower(Power);
-      RightBack.setPower(Power);
-    }
-    else if (Direction == BACKWARD) {
-      LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftForward.setTargetPosition(TargetPosition);
-      LeftBack.setTargetPosition(TargetPosition);
-      RightForward.setTargetPosition(-TargetPosition);
-      RightBack.setTargetPosition(-TargetPosition);
-      LeftForward.setPower(Power);
-      LeftBack.setPower(Power);
-      RightBack.setPower(-Power);
-      RightForward.setPower(-Power);
-
-    } else if (Direction == LEFT) {
-      LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftForward.setTargetPosition(TargetPosition);
-      LeftBack.setTargetPosition(-TargetPosition);
-      RightForward.setTargetPosition(TargetPosition);
-      RightBack.setTargetPosition(-TargetPosition);
-      LeftForward.setPower(Power);
-      LeftBack.setPower(-Power);
-      RightForward.setPower(Power);
-      RightBack.setPower(-Power);
-
-    }
-    else if (Direction == RIGHT) {
-      LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftForward.setTargetPosition(-TargetPosition);
-      LeftBack.setTargetPosition(TargetPosition);
-      RightForward.setTargetPosition(-TargetPosition);
-      RightBack.setTargetPosition(TargetPosition);
-      LeftForward.setPower(-Power);
-      LeftBack.setPower(Power);
-      RightForward.setPower(-Power);
-      RightBack.setPower(Power);
-    }
-    else if (Direction == RTurn) {
-      THRESH = TURNTHRESH;
-      LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftForward.setTargetPosition(-TargetPosition);
-      LeftBack.setTargetPosition(-TargetPosition);
-      RightForward.setTargetPosition(-TargetPosition);
-      RightBack.setTargetPosition(-TargetPosition);
-      LeftForward.setPower(-Power);
-      LeftBack.setPower(-Power);
-      RightForward.setPower(-Power);
-      RightBack.setPower(-Power);
-    }
-    else if (Direction == LTurn) {
-      THRESH = TURNTHRESH;
-      LeftForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightForward.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      RightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      LeftForward.setTargetPosition(TargetPosition);
-      LeftBack.setTargetPosition(TargetPosition);
-      RightForward.setTargetPosition(TargetPosition);
-      RightBack.setTargetPosition(TargetPosition);
-      LeftForward.setPower(Power);
-      LeftBack.setPower(Power);
-      RightForward.setPower(Power);
-      RightBack.setPower(Power);
-    }
-
-    int CurrentPosition = LeftForward.getCurrentPosition();
-    while ((Math.abs(Math.abs(CurrentPosition) - Math.abs(TargetPosition)) > THRESH) && !(isStopRequested())) {
-
-        CurrentPosition = LeftForward.getCurrentPosition();
-
-        telemetry.addData("key", "moving");
-        telemetry.addData("CurrentPosition", CurrentPosition);
-        telemetry.addData("TargetPosition", TargetPosition);
-        telemetry.update();
-      }
-
-    LeftForward.setPower(0);
-    RightForward.setPower(0);
-    LeftBack.setPower(0);
-    RightBack.setPower(0);
-    sleep(200);
-
-  }
 
   private void LinearEncoder_Function(int Direction, int TargetPosition, double Power)
   {

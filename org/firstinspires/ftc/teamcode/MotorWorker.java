@@ -15,7 +15,7 @@ public class MotorWorker extends LinearOpMode {
   private DcMotor LeftForward;
   private DcMotor LeftBack;
 
-  private Util util; // UTIL
+  private Util util;
 
   @Override
   public void runOpMode() {

@@ -31,7 +31,6 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
-
 @Autonomous(name = "BLUEFoundationPark", group = "")
 public class BLUEFoundationPark extends LinearOpMode {
 
@@ -104,14 +103,6 @@ public class BLUEFoundationPark extends LinearOpMode {
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
 
-    LeftForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    RightForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    LeftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    RightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-    LeftFoundation.setPosition(0.80);
-    RightFoundation.setPosition(0.22);
-
     util = new Util( LeftFoundation, RightFoundation,
                     LeftClamp, RightClamp, LeftForward,
                     LeftBack, RightForward, RightBack,
@@ -119,6 +110,7 @@ public class BLUEFoundationPark extends LinearOpMode {
                     IMU, Color, BackDistance, RBBumper, RFBumper,
                     LBBumper, LFBumper);
 
+    util.MotorBRAKE();
     util.ArmUp();
 
     telemetry.addData(">", "INIT DONE");
@@ -138,15 +130,11 @@ public class BLUEFoundationPark extends LinearOpMode {
         telemetry.addData(">", RBBumper.isPressed());
         telemetry.update();
       }
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      LeftForward.setPower(0);
-      RightBack.setPower(0);
+      util.StopTank();
       sleep(500);
       util.MoveTank(RIGHT, 250, 0.3);
 
-      LeftFoundation.setPosition(0.28);
-      RightFoundation.setPosition(0.72);
+      util.ArmDown();
 
       sleep(500);
       RightForward.setPower(0.4);
@@ -162,8 +150,7 @@ public class BLUEFoundationPark extends LinearOpMode {
 
       sleep(500);
 
-      LeftFoundation.setPosition(0.80);
-      RightFoundation.setPosition(0.22);
+      util.ArmUp();
 
       util.MoveTank(LEFT, 700, 0.4);
 
@@ -178,10 +165,7 @@ public class BLUEFoundationPark extends LinearOpMode {
       }
       util.MoveTank(LEFT, 300, 0.4);
 
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      LeftForward.setPower(0);
-      RightBack.setPower(0);
+      util.StopTank();
 
       telemetry.addData(">", "OP MODE DONE");
       telemetry.update();

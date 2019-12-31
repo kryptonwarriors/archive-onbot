@@ -20,7 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaSkyStone;
 import org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone;
 import java.util.List;
 
-@Autonomous(name = "RStone (Blocks to Java)", group = "")
+@Autonomous(name = "RStone", group = "")
 public class RStone extends LinearOpMode {
 
   private DcMotor LeftForward;
@@ -59,16 +59,8 @@ public class RStone extends LinearOpMode {
   int ALL_THRESH = 18;
   int TURNTHRESH = 30;
 
-  /**
-   * This function is executed when this Op Mode is selected from the Driver Station.
-   */
   @Override
   public void runOpMode() {
-
-    //varun is the best, better than rahul, but moni is obviously superior
-    //dhriti is the lead of the team
-    //aman is the greatest
-    //muthu and aarav are eh
 
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     RightForward = hardwareMap.dcMotor.get("RightForward");

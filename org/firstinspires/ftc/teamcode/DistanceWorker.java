@@ -9,33 +9,18 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-/**
- * {@link SensorREV2mDistance} illustrates how to use the REV Robotics
- * Time-of-Flight Range Sensor.
- *
- * The op mode assumes that the range sensor is configured with a name of "sensor_range".
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- *
- * @see <a href="http://revrobotics.com">REV Robotics Web Page</a>
- */
-@Autonomous(name = "Sensor: REV2mDistance", group = "Sensor")
+@Autonomous(name = "DistanceWorker", group = "Sensor")
 
-public class DistanceSample extends LinearOpMode {
+public class DistanceWorker extends LinearOpMode {
 
-    private DistanceSensor sensorRange;
+    private DistanceWorker sensorRange;
 
     @Override
     public void runOpMode() {
-        // you can use this as a regular DistanceSensor.
         sensorRange = hardwareMap.get(DistanceSensor.class, "sensor_range");
-
-        // you can also cast this to a Rev2mDistanceSensor if you want to use added
-        // methods associated with the Rev2mDistanceSensor class.
         Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensorRange;
 
-        telemetry.addData(">>", "Press start to continue");
+        telemetry.addData(">>", "INIT DONE");
         telemetry.update();
 
         waitForStart();
@@ -46,8 +31,6 @@ public class DistanceSample extends LinearOpMode {
             telemetry.addData("range", String.format("%.01f cm", sensorRange.getDistance(DistanceUnit.CM)));
             telemetry.addData("range", String.format("%.01f m", sensorRange.getDistance(DistanceUnit.METER)));
             telemetry.addData("range", String.format("%.01f in", sensorRange.getDistance(DistanceUnit.INCH)));
-
-            // Rev2mDistanceSensor specific methods.
             telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
             telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
 

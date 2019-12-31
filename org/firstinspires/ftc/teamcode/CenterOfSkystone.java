@@ -16,8 +16,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaSkyStone;
 import org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone;
 import java.util.List;
+import java.util.Locale;
 
-@Autonomous(name = "CenterOfSkystone (Blocks to Java)", group = "")
+@Autonomous(name = "CenterOfSkystone", group = "")
 public class CenterOfSkystone extends LinearOpMode {
 
   private DcMotor LeftForward;
@@ -29,6 +30,7 @@ public class CenterOfSkystone extends LinearOpMode {
   private DistanceSensor Distance1;
   private DistanceSensor Distance2;
   private double eyes;
+  private Util util;
   private double boxRightEdge;
   private double boxWidth;
   private double boxLeftEdge;
@@ -76,6 +78,14 @@ public class CenterOfSkystone extends LinearOpMode {
     // in the Camera Stream preview window on the Driver Station.
     tfodSkyStone.activate();
 
+    util = new Util( LeftFoundation, RightFoundation,
+                    LeftClamp, RightClamp, LeftForward,
+                    LeftBack, RightForward, RightBack,
+                    LinearActuator, LeftCascade, RightCascade,
+                    IMU, Color, BackDistance, RBBumper, RFBumper,
+                    LBBumper, LFBumper);
+
+
     telemetry.addData(">", "Press Play to start");
     telemetry.update();
 
@@ -99,10 +109,7 @@ public class CenterOfSkystone extends LinearOpMode {
         telemetry.update();
       }
 
-      LeftForward.setPower(0);
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      RightBack.setPower(0);
+      util.StopTank();
       sleep(200);
 
       LeftForward.setPower(0.5);
@@ -111,10 +118,7 @@ public class CenterOfSkystone extends LinearOpMode {
       RightBack.setPower(-0.5);
       sleep(800);
 
-      LeftForward.setPower(0);
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      RightBack.setPower(0);
+      util.StopTank();
       sleep(200);
 
       LeftForward.setPower(-0.1);       //right to skystone
@@ -125,10 +129,7 @@ public class CenterOfSkystone extends LinearOpMode {
       SkystoneCenter = 1000;
       DetectSkystone(SkystoneCenter);
 
-      LeftForward.setPower(0);
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      RightBack.setPower(0);
+      util.StopTank();
       sleep(200);
 
       //TODO: Go To Foundation and Drop the Skystone
@@ -147,12 +148,8 @@ public class CenterOfSkystone extends LinearOpMode {
       RightBack.setPower(0.7);
       sleep(200);
 
-      LeftForward.setPower(0);
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      RightBack.setPower(0);
+      util.StopTank();
       sleep(3000);
-
 
       LeftForward.setPower(0.7);        //backwards
       RightForward.setPower(-0.7);
@@ -160,10 +157,7 @@ public class CenterOfSkystone extends LinearOpMode {
       RightBack.setPower(-0.7);
       sleep(900);
 
-      LeftForward.setPower(0);
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      RightBack.setPower(0);
+      util.StopTank();
       sleep(200);
 
       LeftForward.setPower(-0.6);     //left
@@ -172,10 +166,7 @@ public class CenterOfSkystone extends LinearOpMode {
       RightBack.setPower(0.6);
       sleep(1300);
 
-      LeftForward.setPower(0);
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      RightBack.setPower(0);
+      util.StopTank();
       sleep(200);
 
       LeftForward.setPower(-0.7);        //forward
@@ -184,10 +175,7 @@ public class CenterOfSkystone extends LinearOpMode {
       RightBack.setPower(0.7);
       sleep(700);
 
-      LeftForward.setPower(0);
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      RightBack.setPower(0);
+      util.StopTank();
       sleep(200);
 
       LeftForward.setPower(-0.6);     //left
@@ -196,12 +184,8 @@ public class CenterOfSkystone extends LinearOpMode {
       RightBack.setPower(0.6);
       sleep(1200);
 
-      LeftForward.setPower(0);
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      RightBack.setPower(0);
+      util.StopTank();
       sleep(200);
-
 
       tfodSkyStone.deactivate();
       vuforiaSkyStone.close();
@@ -227,10 +211,7 @@ public class CenterOfSkystone extends LinearOpMode {
         telemetry.update();
     }
 
-    LeftForward.setPower(0);
-    RightForward.setPower(0);
-    LeftBack.setPower(0);
-    RightBack.setPower(0);
+    util.StopTank();
   }
 
   private void DropStone()

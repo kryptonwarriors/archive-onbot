@@ -77,7 +77,6 @@ public class DetectSkystone extends LinearOpMode {
     private Gyroscope imu_1;
     private Gyroscope imu;
 
-
     int FORWARD = 0;
     int BACKWARD = 1;
     int LEFT = 2;
@@ -124,17 +123,14 @@ public class DetectSkystone extends LinearOpMode {
     private VuforiaLocalizer vuforia = null;
     private ElapsedTime runtime = new ElapsedTime();
 
-
-    /**
-     * This is the webcam we are to use. As with other hardware devices such as motors and
-     * servos, this device is identified using the robot configuration tool in the FTC application.
-     */
     WebcamName webcamName = null;
 
     private boolean targetVisible = false;
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
+
+    private Util util;
 
     @Override
     public void runOpMode() {
@@ -192,12 +188,14 @@ public class DetectSkystone extends LinearOpMode {
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
 
+    util = new Util( LeftFoundation, RightFoundation,
+                    LeftClamp, RightClamp, LeftForward,
+                    LeftBack, RightForward, RightBack,
+                    LinearActuator, LeftCascade, RightCascade,
+                    IMU, Color, BackDistance, RBBumper, RFBumper,
+                    LBBumper, LFBumper);
 
-
-    LeftForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    RightForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    LeftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    RightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    util.MotorBRAKE();
 
     telemetry.addData(">", "INIT DONE");
     telemetry.update();
@@ -221,10 +219,7 @@ public class DetectSkystone extends LinearOpMode {
         telemetry.update();
       }
 
-      LeftForward.setPower(0);
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      RightBack.setPower(0);
+      util.StopTank();
 
       runtime.reset();
       while (opModeIsActive() && (!(targetVisible) && runtime.seconds() < 1)){
@@ -250,7 +245,7 @@ public class DetectSkystone extends LinearOpMode {
     telemetry.addData("TargetVisble Variable", targetVisible);
     telemetry.update();
     sleep(2000);
-      Encoder_Function(RIGHT, 280, 0.3);
+      util.MoveTank(RIGHT, 280, 0.3);
       targetVisible = false;
             // Provide feedback as to where the robot is located (if we know).
             SkyStonePos = "";
@@ -268,7 +263,7 @@ public class DetectSkystone extends LinearOpMode {
              actualAdjust();
            }
            else {
-          Encoder_Function(RIGHT, 150, 0.3);
+          util.MoveTank(RIGHT, 150, 0.3);
           runtime.reset();
 
 }
@@ -284,93 +279,6 @@ public class DetectSkystone extends LinearOpMode {
     targetsSkyStone.deactivate();
 
   } //End of opmode
-
-  private void Encoder_Function(int Direction, int TargetPosition, double Power)
-  {
-    int FORWARD = 0;
-    int BACKWARD = 1;
-    int LEFT = 2;
-    int RIGHT = 3;
-    int RTurn = 6;
-    int LTurn = 7;
-
-    LeftForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    RightForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    LeftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    RightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-    LeftForward.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    RightForward.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    LeftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    RightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-    THRESH = ALL_THRESH;
-    if (Direction == FORWARD) {
-      RightForward.setPower(Power);
-      LeftBack.setPower(Power);
-      LeftForward.setPower(-Power);
-      RightBack.setPower(-Power);
-    }
-    else if (Direction == BACKWARD) {
-      RightForward.setPower(-Power);
-      LeftBack.setPower(-Power);
-      LeftForward.setPower(Power);
-      RightBack.setPower(Power);
-    }
-    else if (Direction == LEFT) {
-      LeftForward.setPower(Power);
-      LeftBack.setPower(Power);
-      RightForward.setPower(Power);
-      RightBack.setPower(Power);
-    }
-    else if (Direction == RIGHT) {
-      LeftForward.setPower(-Power);
-      LeftBack.setPower(-Power);
-      RightForward.setPower(-Power);
-      RightBack.setPower(-Power);
-    }
-    else if (Direction == RTurn) {
-      THRESH = TURNTHRESH;
-      LeftForward.setPower(-Power);
-      LeftBack.setPower(-Power);
-      RightForward.setPower(-Power);
-      RightBack.setPower(-Power);
-    }
-    else if (Direction == LTurn) {
-      THRESH = TURNTHRESH;
-      LeftForward.setPower(Power);
-      LeftBack.setPower(Power);
-      RightForward.setPower(Power);
-      RightBack.setPower(Power);
-    }
-
-    while ( ( (Math.abs(Math.abs(LeftForward.getCurrentPosition()) - Math.abs(TargetPosition)) > THRESH)
-            )
-            && !isStopRequested()
-          )
-    {
-          telemetry.addData("Direction", Direction);
-          telemetry.addData("key", "moving");
-          telemetry.addData("LFCurrentPosition", LeftForward.getCurrentPosition());
-          telemetry.addData("LFTargetPosition", -TargetPosition);
-          telemetry.addData("RFCurrentPosition", RightForward.getCurrentPosition());
-          telemetry.addData("RFTargetPosition", TargetPosition);
-          telemetry.addData("LBCurrentPosition", LeftBack.getCurrentPosition());
-          telemetry.addData("LBTargetPosition", TargetPosition);
-          telemetry.addData("RBCurrentPosition", RightBack.getCurrentPosition());
-          telemetry.addData("RBTargetPosition", -TargetPosition);
-          telemetry.update();
-    }
-
-    LeftBack.setPower(0.0);
-    LeftForward.setPower(0.0);
-    RightForward.setPower(0.0);
-    RightBack.setPower(0.0);
-    telemetry.addData("Zero", "Motors stopped");
-    telemetry.update();
-    sleep(200);
-
-  } // End of function
 
 private void checkForSkystone() {
   if (targetVisible) {
@@ -402,7 +310,7 @@ private void checkForSkystone() {
 
 private void adjust() {
   if (SkyStonePos == "Center") {
-              Encoder_Function(FORWARD, 400, 0.3);
+              util.MoveTank(FORWARD, 400, 0.3);
             }
             else if (SkyStonePos == "Left") {
               LeftForward.setPower(-0.27);
@@ -417,7 +325,7 @@ private void adjust() {
               RightForward.setPower(0);
               LeftBack.setPower(0);
               RightBack.setPower(0);
-              Encoder_Function(FORWARD, 400, 0.3);
+              util.MoveTank(FORWARD, 400, 0.3);
             }
             else if (SkyStonePos == "Right") {
               LeftForward.setPower(0.27);
@@ -433,28 +341,28 @@ private void adjust() {
               LeftBack.setPower(0);
               RightBack.setPower(0);
 
-              Encoder_Function(FORWARD, 400, 0.3);
+              util.MoveTank(FORWARD, 400, 0.3);
             }
 }
 
 private void actualAdjust() {
 
   if(SkyStonePos == "Center") {
-    Encoder_Function(FORWARD, 400, 0.3);
+    util.MoveTank(FORWARD, 400, 0.3);
   }
   else if(SkyStonePos == "Left") {
     int moveRight = (int)Math.abs(yPos - 1.3) * 50;
     telemetry.addData("right", moveRight);
     telemetry.update();
-    Encoder_Function(RIGHT, moveRight, 0.3);
-    Encoder_Function(FORWARD, 400, 0.3);
+    util.MoveTank(RIGHT, moveRight, 0.3);
+    util.MoveTank(FORWARD, 400, 0.3);
   }
   else if(SkyStonePos == "Right") {
     int moveLeft = (int)Math.abs(0.8 - yPos) * 50;
     telemetry.addData("left", moveLeft);
     telemetry.update();
-    Encoder_Function(LEFT, moveLeft, 0.3);
-    Encoder_Function(FORWARD, 400, 0.3);
+    util.MoveTank(LEFT, moveLeft, 0.3);
+    util.MoveTank(FORWARD, 400, 0.3);
   }
 
 

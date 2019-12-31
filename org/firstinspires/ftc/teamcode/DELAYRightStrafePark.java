@@ -30,7 +30,6 @@ import android.graphics.Color;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
-
 @Autonomous(name = "DELAYRightStrafePark", group = "")
 public class DELAYRightStrafePark extends LinearOpMode {
 
@@ -99,17 +98,14 @@ public class DELAYRightStrafePark extends LinearOpMode {
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
 
-    LeftForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    RightForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    LeftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    RightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
     util = new Util( LeftFoundation, RightFoundation,
                     LeftClamp, RightClamp, LeftForward,
                     LeftBack, RightForward, RightBack,
                     LinearActuator, LeftCascade, RightCascade,
                     IMU, Color, BackDistance, RBBumper, RFBumper,
                     LBBumper, LFBumper);
+
+    util.MotorBRAKE();
 
     telemetry.addData(">", "INIT DONE");
     telemetry.update();
