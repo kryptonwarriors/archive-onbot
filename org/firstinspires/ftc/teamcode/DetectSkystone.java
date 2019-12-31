@@ -99,7 +99,7 @@ public class DetectSkystone extends LinearOpMode {
     private static final boolean PHONE_IS_PORTRAIT = false;
     private static final String VUFORIA_KEY =
             "ATtMcMX/////AAABmb5pRDectEzdvJK1epLa9N9J1oqdQ6gzb2cBjuQ0nEhg5aIm3m+cYXYZTqSUY+v8yGl8+UiYCyyG6cSF5DpWvqqy/x/cYYrv02jiaW7mhTX4B8Pfk3TcqT+COr1Z7tQqgHect1mujWffOu7TBJ5MU03uFHDUG5+X/xrSiu7mgsl+/DOILeUhXtz/8oqJVlJ/kMbFtstisbLtjui227t77vif/T0w8ZIMjB8HsKysbrk88ueZe2Sx2aEWJpUtUca4Z4DytfS4yS46lHhOEqKwLth/xHMtCFZ1nickcitpagXXRf2wTxhKOd8T9i6fnb6v/00weiIZnxfujgWpYZIab1So+yYLPWmvVLjRKRkDuYGL";
-    
+
      // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
     private static final float mmPerInch        = 25.4f;
@@ -135,25 +135,25 @@ public class DetectSkystone extends LinearOpMode {
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
-   
+
     @Override
     public void runOpMode() {
-    
+
     webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
     int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
     VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-    
+
     parameters.vuforiaLicenseKey = VUFORIA_KEY;
     parameters.cameraName = webcamName;
-    
+
     vuforia = ClassFactory.getInstance().createVuforia(parameters);
     VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
     VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
     stoneTarget.setName("SkyStone Target");
-    
+
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
     allTrackables.addAll(targetsSkyStone);
-    
+
     stoneTarget.setLocation(OpenGLMatrix
                 .translation(0, 0, stoneZ)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
@@ -171,18 +171,18 @@ public class DetectSkystone extends LinearOpMode {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
         }
 
-    
+
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     RightForward = hardwareMap.dcMotor.get("RightForward");
     LeftBack = hardwareMap.dcMotor.get("LeftBack");
     RightBack = hardwareMap.dcMotor.get("RightBack");
-    
+
     LinearActuator = hardwareMap.dcMotor.get("LinearActuator");
     LeftCascade = hardwareMap.dcMotor.get("LeftCascade");
     RightCascade = hardwareMap.dcMotor.get("RightCascade");
 
     Color = hardwareMap.get(ColorSensor.class, "Color");
-    
+
     BackDistance = hardwareMap.get(DistanceSensor.class, "BackDistance");
     LFBumper = hardwareMap.get(RevTouchSensor.class, "LFBumper");
     RFBumper = hardwareMap.get(RevTouchSensor.class, "RFBumper");
@@ -191,8 +191,8 @@ public class DetectSkystone extends LinearOpMode {
     RightFoundation = hardwareMap.servo.get("RightFoundation");
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
-    
-     
+
+
 
     LeftForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     RightForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -205,36 +205,36 @@ public class DetectSkystone extends LinearOpMode {
     waitForStart();
 
     if (opModeIsActive()) {
-      
+
       targetsSkyStone.activate();
-      
+
       LeftForward.setPower(-0.18);
       RightForward.setPower(0.18);
       LeftBack.setPower(0.18);
       RightBack.setPower(-0.18);
-      
+
       targetVisible = false;
       while(opModeIsActive() && BackDistance.getDistance(DistanceUnit.INCH) <= 18  ) {
-      
+
         telemetry.addData("range", String.format("%.01f in", BackDistance.getDistance(DistanceUnit.INCH)));
         telemetry.addData("RunTime", runtime.seconds());
         telemetry.update();
       }
-      
+
       LeftForward.setPower(0);
       RightForward.setPower(0);
       LeftBack.setPower(0);
       RightBack.setPower(0);
-      
+
       runtime.reset();
-      while (opModeIsActive() && (!(targetVisible) && runtime.seconds() < 1)){ 
+      while (opModeIsActive() && (!(targetVisible) && runtime.seconds() < 1)){
         for (VuforiaTrackable trackable : allTrackables) {
           if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
               targetVisible = true;
               telemetry.addData("range", String.format("%.01f in", BackDistance.getDistance(DistanceUnit.INCH)));
               telemetry.addData("Visible Target", trackable.getName());
               telemetry.update();
-              
+
               break;
             }
         }
@@ -258,8 +258,8 @@ public class DetectSkystone extends LinearOpMode {
             sleep(800);
             telemetry.addData("TargetVisible", targetVisible);
             telemetry.update();
-            
-           
+
+
            if(targetVisible) {
             telemetry.addData("TargetVisible yayy", targetVisible);
             telemetry.addData("yPos", yPos);
@@ -270,19 +270,19 @@ public class DetectSkystone extends LinearOpMode {
            else {
           Encoder_Function(RIGHT, 150, 0.3);
           runtime.reset();
-          
+
 }
             // Provide feedback as to where the robot is located (if we know).
             SkyStonePos = "";
             checkForSkystone();
-            
+
         }
     }
-      
-      
-    
+
+
+
     targetsSkyStone.deactivate();
-    
+
   } //End of opmode
 
   private void Encoder_Function(int Direction, int TargetPosition, double Power)
@@ -397,7 +397,7 @@ private void checkForSkystone() {
                 telemetry.addData("Visible Target", "none");
             }
             telemetry.update();
-  
+
 }
 
 private void adjust() {
@@ -432,13 +432,13 @@ private void adjust() {
               RightForward.setPower(0);
               LeftBack.setPower(0);
               RightBack.setPower(0);
-              
+
               Encoder_Function(FORWARD, 400, 0.3);
             }
 }
 
 private void actualAdjust() {
-  
+
   if(SkyStonePos == "Center") {
     Encoder_Function(FORWARD, 400, 0.3);
   }
@@ -456,8 +456,8 @@ private void actualAdjust() {
     Encoder_Function(LEFT, moveLeft, 0.3);
     Encoder_Function(FORWARD, 400, 0.3);
   }
-  
-  
+
+
 }
 
 } //End of Class

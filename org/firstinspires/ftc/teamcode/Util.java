@@ -1,3 +1,5 @@
+// import com.qualcomm.robotcore.brain.Moni;
+
 package org.firstinspires.ftc.teamcode;
 
 // DC MOTOR
@@ -20,13 +22,24 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 // SERVO
 import com.qualcomm.robotcore.hardware.Servo;
 
+
 // UTIL
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import java.util.List;
+import java.util.ArrayList;
 import android.app.Activity;
 import java.util.Locale;
 import android.view.View;
+import java.lang.annotation.Target;
 import android.graphics.Color;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+// CAM
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
+import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 // SENSORS
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -38,6 +51,7 @@ public class Util {
 // SERVO
 public static Servo LeftFoundation = null;
 public static Servo RightFoundation = null;
+
 public static Servo LeftClamp = null;
 public static Servo RightClamp = null;
 
@@ -46,12 +60,23 @@ public static DcMotor LeftForward = null;
 public static DcMotor LeftBack = null;
 public static DcMotor RightForward = null;
 public static DcMotor RightBack = null;
+
 public static DcMotor LinearActuator = null;
+
 public static DcMotor LeftCascade = null;
 public static DcMotor RightCascade = null;
 
 // SENSORS
 public static BNO055IMU IMU;
+private ColorSensor Color;
+private DistanceSensor BackDistance;
+
+// BUMPERS
+private TouchSensor LFBumper;
+private TouchSensor RFBumper;
+
+private TouchSensor LBBumper;
+private TouchSensor RBBumper;
 
 // MISC VARIABLES.
 public static int THRESH = 15;
@@ -66,7 +91,10 @@ public Util(Servo inLeftFoundation, Servo inRightFoundation,
             DcMotor inLeftForward, DcMotor inLeftBack,
             DcMotor inRightForward, DcMotor inRightBack,
             DcMotor inLinearActuator, DcMotor inLeftCascade,
-            DcMotor inRightCascade, BNO055IMU inIMU)
+            DcMotor inRightCascade, BNO055IMU inIMU,
+            ColorSensor inColor, DistanceSensor inBackDistance,
+            TouchSensor inRBBumper, TouchSensor inRFBumper,
+            TouchSensor inLBBumper, TouchSensor inLFBumper)
 {
     // SERVO
     LeftFoundation = inLeftFoundation;
@@ -85,10 +113,18 @@ public Util(Servo inLeftFoundation, Servo inRightFoundation,
 
     // SENSORS
     IMU = inIMU;
+    Color = inColor;
+    BackDistance = inBackDistance;
+
+    // BUMPERS
+    RBBumper = inRBBumper;
+    RFBumper = inRFBumper;
+    LFBumper = inLFBumper;
+    LBBumper = inLBBumper;
 
 }
 
-public static void MoveTank( int Direction, int TargetPosition, double Power ) throws InterruptedException {
+public static void MoveTank( int Direction, int TargetPosition, double Power ) {
     int FORWARD = 0;
     int BACKWARD = 1;
     int LEFT = 2;
@@ -149,35 +185,59 @@ public static void MoveTank( int Direction, int TargetPosition, double Power ) t
 
 }
 
-public static void ArmFunc ( boolean Reset ) throws InterruptedException {
-    if (Reset == true) {
-    LeftFoundation.setPosition(0.80);
+public static void ArmUp () {
+    // ARM UP & RESET REEEEE
+    LeftFoundation.setPosition(0.7);
     RightFoundation.setPosition(0.22);
-    // ARM UP & RESET
-    } else {
+
+}
+
+public static void ArmDown () {
+    // ARM DOWN & PULL
     LeftFoundation.setPosition(0.28);
     RightFoundation.setPosition(0.72);
-    }
 }
 
-public static void PickStone ( boolean Clamp ) throws InterruptedException {
-    if (Clamp = true) {
+public static void PickStone () {
     // CLAMP IN & PICK UP/CLOSE
     LeftClamp.setPosition(0.8);
-    RightClamp.setPosition(0.2);
-    } else {
-    // CLAMP OUT & DROP/OPEN
+    RightClamp.setPosition(0.3);
+}
+
+public static void DropStone () {
+  // CLAMP OUT & DROP/OPEN
     LeftClamp.setPosition(0.7);
-    RightClamp.setPosition(0.5);
+    RightClamp.setPosition(0.4);
+}
+
+public static void Extend ( int Direction, int Power ) {
+    int Retract = 0;
+    int Extend = 1;
+
+    if (Direction == Retract) {
+        LinearActuator.setPower(-Power);
+    } else if (Direction == Extend) {
+        LinearActuator.setPower(Power);
     }
 }
 
-public static void IMUFunction ( double time, double Power, int Direction ) {
+public static void MotorBRAKE () {
+  LeftForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+  RightForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+  LeftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+  RightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+}
 
+
+public static void StopTank () {
+  LeftBack.setPower(0.0);
+  LeftForward.setPower(0.0);
+  RightForward.setPower(0.0);
+  RightBack.setPower(0.0)
 }
 
 /*
-public static void Cascade ( int Level, int Power) throws InterruptedException {
+public static void Cascade ( int Level, int Power) {
     int reset = 0;
     int onel = 1;
     int twol = 2;
@@ -208,16 +268,6 @@ public static void Cascade ( int Level, int Power) throws InterruptedException {
 }
 */
 
-public static void Extend ( int Direction, int Power ) throws InterruptedException {
-    int Retract = 0;
-    int Extend = 1;
-
-    if (Direction == Retract) {
-        LinearActuator.setPower(-Power);
-    } else if (Direction == Extend) {
-        LinearActuator.setPower(Power);
-    }
+  // BY MONI.
 }
 
-}
-// BY MONI.

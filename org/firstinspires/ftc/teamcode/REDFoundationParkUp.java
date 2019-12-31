@@ -141,11 +141,11 @@ public class REDFoundationParkUp extends LinearOpMode {
       RightFoundation.setPosition(0.22);
 
       Encoder_Function(RIGHT, 700, 0.4);
-      
+
       Encoder_Function(BACKWARD, 400, 0.5);
 
-      
-    
+
+
       Encoder_Function(RIGHT, 300, 0.4);
 
       RightForward.setPower(0);

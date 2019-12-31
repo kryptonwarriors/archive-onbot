@@ -1,0 +1,14 @@
+COPY PASTE THIS IN A PROGRAM TO USE THE UTIL.JAVA FILE.
+
+import java.util.Locale;
+import java.util.List;
+import org.firstinspires.ftc.robotcore.external.JavaUtil;
+
+private Util util;
+
+util = new Util( LeftFoundation, RightFoundation,
+                    LeftClamp, RightClamp, LeftForward,
+                    LeftBack, RightForward, RightBack,
+                    LinearActuator, LeftCascade, RightCascade,
+                    IMU, Color, BackDistance, RBBumper, RFBumper,
+                    LBBumper, LFBumper);

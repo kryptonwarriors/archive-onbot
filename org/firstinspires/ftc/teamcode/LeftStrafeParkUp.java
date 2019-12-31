@@ -57,6 +57,7 @@ public class LeftStrafeParkUp extends LinearOpMode {
     private Gyroscope imu_1;
     private Gyroscope imu;
 
+    private Util util;
 
     int FORWARD = 0;
     int BACKWARD = 1;
@@ -73,22 +74,22 @@ public class LeftStrafeParkUp extends LinearOpMode {
     int TURNTHRESH = 30;
     String TapeColor = null;
 
-   
+
     @Override
     public void runOpMode() {
 
-    
+
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     RightForward = hardwareMap.dcMotor.get("RightForward");
     LeftBack = hardwareMap.dcMotor.get("LeftBack");
     RightBack = hardwareMap.dcMotor.get("RightBack");
-    
+
     LinearActuator = hardwareMap.dcMotor.get("LinearActuator");
     LeftCascade = hardwareMap.dcMotor.get("LeftCascade");
     RightCascade = hardwareMap.dcMotor.get("RightCascade");
 
     Color = hardwareMap.get(ColorSensor.class, "Color");
-    
+
     BackDistance = hardwareMap.get(DistanceSensor.class, "BackDistance");
     LFBumper = hardwareMap.get(RevTouchSensor.class, "LFBumper");
     RFBumper = hardwareMap.get(RevTouchSensor.class, "RFBumper");
@@ -103,104 +104,26 @@ public class LeftStrafeParkUp extends LinearOpMode {
     LeftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     RightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+    util = new Util( LeftFoundation, RightFoundation,
+                    LeftClamp, RightClamp, LeftForward,
+                    LeftBack, RightForward, RightBack,
+                    LinearActuator, LeftCascade, RightCascade,
+                    IMU, Color, BackDistance, RBBumper, RFBumper,
+                    LBBumper, LFBumper);
+
     telemetry.addData(">", "INIT DONE");
     telemetry.update();
 
     waitForStart();
 
     if (opModeIsActive()) {
-      Encoder_Function(FORWARD, 400, 0.5);
-      Encoder_Function(LEFT, 900, 0.5);
-      // Encoder_Function(BACKWARD, 1000, 0.3);
+      util.MoveTank(FORWARD, 400, 0.5);
+      util.MoveTank(LEFT, 900, 0.5);
+      util.StopTank();
+      // util.MoveTank(BACKWARD, 1000, 0.3);
     }
 
   } //End of opmode
-
-  private void Encoder_Function(int Direction, int TargetPosition, double Power)
-  {
-    int FORWARD = 0;
-    int BACKWARD = 1;
-    int LEFT = 2;
-    int RIGHT = 3;
-    int RTurn = 6;
-    int LTurn = 7;
-
-    LeftForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    RightForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    LeftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    RightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-    LeftForward.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    RightForward.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    LeftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    RightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-    THRESH = ALL_THRESH;
-    if (Direction == FORWARD) {
-      RightForward.setPower(Power);
-      LeftBack.setPower(Power);
-      LeftForward.setPower(-Power);
-      RightBack.setPower(-Power);
-    }
-    else if (Direction == BACKWARD) {
-      RightForward.setPower(-Power);
-      LeftBack.setPower(-Power);
-      LeftForward.setPower(Power);
-      RightBack.setPower(Power);
-    }
-    else if (Direction == LEFT) {
-      LeftForward.setPower(Power);
-      LeftBack.setPower(Power);
-      RightForward.setPower(Power);
-      RightBack.setPower(Power);
-    }
-    else if (Direction == RIGHT) {
-      LeftForward.setPower(-Power);
-      LeftBack.setPower(-Power);
-      RightForward.setPower(-Power);
-      RightBack.setPower(-Power);
-    }
-    else if (Direction == RTurn) {
-      THRESH = TURNTHRESH;
-      LeftForward.setPower(-Power);
-      LeftBack.setPower(-Power);
-      RightForward.setPower(-Power);
-      RightBack.setPower(-Power);
-    }
-    else if (Direction == LTurn) {
-      THRESH = TURNTHRESH;
-      LeftForward.setPower(Power);
-      LeftBack.setPower(Power);
-      RightForward.setPower(Power);
-      RightBack.setPower(Power);
-    }
-
-    while ( ( (Math.abs(Math.abs(LeftBack.getCurrentPosition()) - Math.abs(TargetPosition)) > THRESH)
-            )
-            && !isStopRequested()
-          )
-    {
-          telemetry.addData("Direction", Direction);
-          telemetry.addData("key", "moving");
-          telemetry.addData("LFCurrentPosition", LeftForward.getCurrentPosition());
-          telemetry.addData("LFTargetPosition", -TargetPosition);
-          telemetry.addData("RFCurrentPosition", RightForward.getCurrentPosition());
-          telemetry.addData("RFTargetPosition", TargetPosition);
-          telemetry.addData("LBCurrentPosition", LeftBack.getCurrentPosition());
-          telemetry.addData("LBTargetPosition", TargetPosition);
-          telemetry.addData("RBCurrentPosition", RightBack.getCurrentPosition());
-          telemetry.addData("RBTargetPosition", -TargetPosition);
-          telemetry.update();
-    }
-
-    LeftBack.setPower(0.0);
-    LeftForward.setPower(0.0);
-    RightForward.setPower(0.0);
-    RightBack.setPower(0.0);
-    telemetry.addData("Zero", "Motors stopped");
-    telemetry.update();
-
-  } // End of function
 
 } //End of Class
 

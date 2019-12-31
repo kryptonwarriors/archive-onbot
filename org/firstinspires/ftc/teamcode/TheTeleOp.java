@@ -9,6 +9,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import java.util.Locale;
+import java.util.List;
+import org.firstinspires.ftc.robotcore.external.JavaUtil;
 
 @TeleOp(name = "TheTeleOp", group = "")
 public class TheTeleOp extends LinearOpMode {
@@ -18,6 +21,7 @@ public class TheTeleOp extends LinearOpMode {
   private ElapsedTime runtime = new ElapsedTime();
   private double Multiplier = 0.7;
   private double StrafeMultiplier = 0.8;
+  private Util util;
 
  private double Scale (double Input) {
       double Output = Input * Math.abs(Input);
@@ -39,24 +43,23 @@ public class TheTeleOp extends LinearOpMode {
     LeftCascade = hardwareMap.dcMotor.get("LeftCascade");
     LinearActuator = hardwareMap.dcMotor.get("LinearActuator");
 
-
-    RightForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    RightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    LeftForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    LeftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    util = new Util( LeftFoundation, RightFoundation,
+                    LeftClamp, RightClamp, LeftForward,
+                    LeftBack, RightForward, RightBack,
+                    LinearActuator, LeftCascade, RightCascade,
+                    IMU, Color, BackDistance, RBBumper, RFBumper,
+                    LBBumper, LFBumper);
+    util.MotorBRAKE();
 
     RightBack.setDirection(DcMotorSimple.Direction.REVERSE);
     LeftBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
-    RightForward.setPower(0);
-    RightBack.setPower(0);
-    LeftForward.setPower(0);
-    LeftBack.setPower(0);
+    util.StopTank();
     telemetry.addData(">", "INIT DONE");
-// RESET TIME
+    // RESET TIME
     runtime.reset();
-
     telemetry.update();
+
     waitForStart();
     if (opModeIsActive()) {
       while (opModeIsActive()) {
@@ -104,24 +107,17 @@ public class TheTeleOp extends LinearOpMode {
         LeftBack.setPower(Multiplier * Scale(gamepad1.left_stick_y));
       }
       if (gamepad2.a == true) {
-        LeftClamp.setPosition(0.8);
-        RightClamp.setPosition(0.3);
-          // Clamp in & CLOSE
+        util.PickStone();
       }
       if (gamepad2.b == true) {
-        LeftClamp.setPosition(0.7);
-        RightClamp.setPosition(0.4);
-          // Clamp out & OPEN
+        util.DropStone();
       }
       if (gamepad2.x == true) {
-          LeftFoundation.setPosition(0.28);
-          RightFoundation.setPosition(0.72);
+          util.ArmDown();
           // Down
         }
         if (gamepad2.y == true) {
-          LeftFoundation.setPosition(0.80);
-          RightFoundation.setPosition(0.22);
-          // Up
+          util.ArmUp();
         }
         if (gamepad2.left_bumper == true) {
           LeftCascade.setPower(-0.2);

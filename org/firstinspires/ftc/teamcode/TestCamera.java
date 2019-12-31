@@ -100,7 +100,7 @@ public class TestCamera extends LinearOpMode {
     private static final boolean PHONE_IS_PORTRAIT = false;
     private static final String VUFORIA_KEY =
             "ATtMcMX/////AAABmb5pRDectEzdvJK1epLa9N9J1oqdQ6gzb2cBjuQ0nEhg5aIm3m+cYXYZTqSUY+v8yGl8+UiYCyyG6cSF5DpWvqqy/x/cYYrv02jiaW7mhTX4B8Pfk3TcqT+COr1Z7tQqgHect1mujWffOu7TBJ5MU03uFHDUG5+X/xrSiu7mgsl+/DOILeUhXtz/8oqJVlJ/kMbFtstisbLtjui227t77vif/T0w8ZIMjB8HsKysbrk88ueZe2Sx2aEWJpUtUca4Z4DytfS4yS46lHhOEqKwLth/xHMtCFZ1nickcitpagXXRf2wTxhKOd8T9i6fnb6v/00weiIZnxfujgWpYZIab1So+yYLPWmvVLjRKRkDuYGL";
-    
+
      // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
     private static final float mmPerInch        = 25.4f;
@@ -128,7 +128,7 @@ public class TestCamera extends LinearOpMode {
     PIDController pidDrive;
     double        globalAngle, correction;
     Orientation   lastAngles = new Orientation();
-    
+
     /**
      * This is the webcam we are to use. As with other hardware devices such as motors and
      * servos, this device is identified using the robot configuration tool in the FTC application.
@@ -139,25 +139,25 @@ public class TestCamera extends LinearOpMode {
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
-   
+
     @Override
     public void runOpMode() {
-    
+
     webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
     int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
     VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-    
+
     parameters.vuforiaLicenseKey = VUFORIA_KEY;
     parameters.cameraName = webcamName;
-    
+
     vuforia = ClassFactory.getInstance().createVuforia(parameters);
     VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
     VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
     stoneTarget.setName("SkyStone Target");
-    
+
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
     allTrackables.addAll(targetsSkyStone);
-    
+
     stoneTarget.setLocation(OpenGLMatrix
                 .translation(0, 0, stoneZ)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
@@ -175,18 +175,18 @@ public class TestCamera extends LinearOpMode {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
         }
 
-    
+
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     RightForward = hardwareMap.dcMotor.get("RightForward");
     LeftBack = hardwareMap.dcMotor.get("LeftBack");
     RightBack = hardwareMap.dcMotor.get("RightBack");
-    
+
     LinearActuator = hardwareMap.dcMotor.get("LinearActuator");
     LeftCascade = hardwareMap.dcMotor.get("LeftCascade");
     RightCascade = hardwareMap.dcMotor.get("RightCascade");
 
     Color = hardwareMap.get(ColorSensor.class, "Color");
-    
+
     BackDistance = hardwareMap.get(DistanceSensor.class, "BackDistance");
     LFBumper = hardwareMap.get(RevTouchSensor.class, "LFBumper");
     RFBumper = hardwareMap.get(RevTouchSensor.class, "RFBumper");
@@ -195,7 +195,7 @@ public class TestCamera extends LinearOpMode {
     RightFoundation = hardwareMap.servo.get("RightFoundation");
     LeftClamp = hardwareMap.servo.get("LeftClamp");
     RightClamp = hardwareMap.servo.get("RightClamp");
-    
+
     LeftForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     RightForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     LeftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -203,13 +203,14 @@ public class TestCamera extends LinearOpMode {
 
     LeftClamp.setPosition(0.7);
     RightClamp.setPosition(0.4);
-    
+
     BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
     imuParameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
     imuParameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
     imuParameters.loggingEnabled      = false;
+    imu = hardwareMap.get(BNO055IMU.class, "imu");
     imu.initialize(imuParameters);
-    
+
     // make sure the imu gyro is calibrated before continuing.
     while (!isStopRequested() && !imu.isGyroCalibrated())
     {
@@ -223,39 +224,40 @@ public class TestCamera extends LinearOpMode {
     waitForStart();
 
     if (opModeIsActive()) {
-      
-      
+
+
       pidDrive = new PIDController(.05, 0, 0);
       pidDrive.setSetpoint(0);
+
       pidDrive.setOutputRange(0, 0.6);
       pidDrive.setInputRange(-90, 90);
       pidDrive.enable();
-        
+
       EncoderPID(LEFT, 1000, 0.6);
       sleep(25000);
-      
-      
+
+
       targetsSkyStone.activate();
-      
+
       LeftForward.setPower(-0.18);
       RightForward.setPower(0.18);
       LeftBack.setPower(0.18);
       RightBack.setPower(-0.18);
-      
+
       targetVisible = false;
       while(opModeIsActive() && BackDistance.getDistance(DistanceUnit.INCH) <= 18  ) {
         telemetry.addData("range", String.format("%.01f in", BackDistance.getDistance(DistanceUnit.INCH)));
         telemetry.addData("RunTime", runtime.seconds());
         telemetry.update();
       }
-      
+
       LeftForward.setPower(0);
       RightForward.setPower(0);
       LeftBack.setPower(0);
       RightBack.setPower(0);
-      
+
       runtime.reset();
-      while (opModeIsActive() && (!(targetVisible) && runtime.seconds() < 1)){ 
+      while (opModeIsActive() && (!(targetVisible) && runtime.seconds() < 1)){
         for (VuforiaTrackable trackable : allTrackables) {
           if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
               targetVisible = true;
@@ -276,7 +278,7 @@ public class TestCamera extends LinearOpMode {
       if (!targetVisible) {
         Encoder_Function(RIGHT, 240, 0.3);
         runtime.reset();
-        while (opModeIsActive() && (!(targetVisible) && runtime.seconds() < 1)){ 
+        while (opModeIsActive() && (!(targetVisible) && runtime.seconds() < 1)){
           for (VuforiaTrackable trackable : allTrackables) {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                 targetVisible = true;
@@ -286,7 +288,7 @@ public class TestCamera extends LinearOpMode {
                 if (robotLocationTransform != null) {
                   lastLocation = robotLocationTransform;
                 }
-  
+
                 telemetry.addData("Visible Target", trackable.getName());
                 telemetry.update();
                 break;
@@ -294,11 +296,11 @@ public class TestCamera extends LinearOpMode {
           }
         }
       }
-      
+
       if (!targetVisible) {
         Encoder_Function(RIGHT, 240, 0.3);
         runtime.reset();
-        while (opModeIsActive() && (!(targetVisible) && runtime.seconds() < 1)){ 
+        while (opModeIsActive() && (!(targetVisible) && runtime.seconds() < 1)){
           for (VuforiaTrackable trackable : allTrackables) {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                 targetVisible = true;
@@ -308,7 +310,7 @@ public class TestCamera extends LinearOpMode {
                 if (robotLocationTransform != null) {
                   lastLocation = robotLocationTransform;
                 }
-  
+
                 telemetry.addData("Visible Target", trackable.getName());
                 telemetry.update();
                 break;
@@ -316,7 +318,7 @@ public class TestCamera extends LinearOpMode {
           }
         }
       }
-      
+
       telemetry.update();
       if (targetVisible) {
         // Provide feedback as to where the robot is located (if we know).
@@ -324,55 +326,55 @@ public class TestCamera extends LinearOpMode {
         checkForSkystone();
         sleep(3000);
         actualAdjust();
-      } 
-    
+      }
+
       targetsSkyStone.deactivate();
       sleep(1000);
       //pick up either skystone or stone
- 
+
     LinearActuator.setPower(-0.2);
     sleep(800);
     LinearActuator.setPower(0);
-    
+
     LeftClamp.setPosition(0.8);
     RightClamp.setPosition(0.3);
-    
+
     RightCascade.setPower(0.2);
     LeftCascade.setPower(0.2);
     sleep(300);
     RightCascade.setPower(0);
     LeftCascade.setPower(0);
-    
+
     LeftForward.setPower(0.18);
      RightForward.setPower(-0.18);
       LeftBack.setPower(-0.18);
       RightBack.setPower(0.18);
       RightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-      
+
       targetVisible = false;
       while(opModeIsActive() && BackDistance.getDistance(DistanceUnit.INCH) >= 26 || RightBack.getCurrentPosition()>400 ) {
         telemetry.addData("range", String.format("%.01f in", BackDistance.getDistance(DistanceUnit.INCH)));
         telemetry.addData("RunTime", runtime.seconds());
         telemetry.update();
       }
-      
+
       LeftForward.setPower(0);
       RightForward.setPower(0);
       LeftBack.setPower(0);
       RightBack.setPower(0);
-    
+
     RightCascade.setPower(-0.2);
     LeftCascade.setPower(-0.2);
     sleep(400);
     RightCascade.setPower(0);
     LeftCascade.setPower(0);
-    
+
     Encoder_Function(LEFT, 1000, 0.4);
-    
-    
+
+
     } // end of if opmode active
-      
-    
+
+
   } //End of opmode
 
   /**
@@ -401,7 +403,7 @@ public class TestCamera extends LinearOpMode {
 
       return globalAngle;
   }
-  
+
   private void StopAndReset(){
     LeftForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     RightForward.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -412,16 +414,16 @@ public class TestCamera extends LinearOpMode {
     RightForward.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     LeftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     RightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-  
+
   }
-  
+
   private void EncoderPID(int Direction, int TargetPosition, double Power) {
-    
+
     StopAndReset();
     while ( Math.abs(LeftForward.getCurrentPosition()) <=  Math.abs(TargetPosition)  && !isStopRequested() ) {
-      
+
       correction = pidDrive.performPID(getAngle());
-    
+
       if (Direction == LEFT) {
         LeftForward.setPower(Power-correction);
         LeftBack.setPower(Power-correction);
@@ -434,7 +436,7 @@ public class TestCamera extends LinearOpMode {
         RightForward.setPower(-Power-correction);
         RightBack.setPower(-Power-correction);
       }
-   
+
       telemetry.addData("Direction", Direction);
       telemetry.addData("key", "moving");
       telemetry.addData("LFCurrentPosition", LeftForward.getCurrentPosition());
@@ -447,16 +449,16 @@ public class TestCamera extends LinearOpMode {
       telemetry.addData("RBTargetPosition", -TargetPosition);
       telemetry.update();
     }
-  
+
     StopDrive();
-    
+
   }
-  
-  
+
+
   private void Encoder_Function(int Direction, int TargetPosition, double Power)
   {
     StopAndReset();
-   
+
     THRESH = ALL_THRESH;
     if (Direction == FORWARD) {
       RightForward.setPower(Power);
@@ -514,9 +516,9 @@ public class TestCamera extends LinearOpMode {
           telemetry.addData("RBTargetPosition", -TargetPosition);
           telemetry.update();
     }
-  
+
     StopDrive();
- 
+
   } // End of function
 
   private void StopDrive()
@@ -527,14 +529,14 @@ public class TestCamera extends LinearOpMode {
       RightBack.setPower(0.0);
       telemetry.addData("Zero", "Motors stopped");
       telemetry.update();
-      sleep(200);  
+      sleep(200);
   }
 
 private void checkForSkystone() {
-  
+
   if (targetVisible) {
-  
-    
+
+
     // express position (translation) of robot in inches.
     VectorF translation = lastLocation.getTranslation();
     telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
@@ -542,10 +544,10 @@ private void checkForSkystone() {
       yPos = translation.get(1)/mmPerInch;
       if (yPos >=-0.7 && yPos <= 1.1) {
           SkyStonePos = "Center";
-      } 
+      }
       else if (yPos > 1.1) {
         SkyStonePos = "Left";
-      } 
+      }
       else if (yPos <-0.7) {
         SkyStonePos = "Right";
       }
@@ -593,13 +595,13 @@ private void adjust() {
       RightForward.setPower(0);
       LeftBack.setPower(0);
       RightBack.setPower(0);
-      
+
       Encoder_Function(FORWARD, 400, 0.2);
     }
 }
 
 private void actualAdjust() {
-  
+
   if(SkyStonePos == "Left") {
     int moveRight = ((int)Math.abs(yPos - 1.1) * 21) + 80;
     telemetry.addData("right", moveRight);
@@ -612,10 +614,10 @@ private void actualAdjust() {
     telemetry.update();
     Encoder_Function(LEFT, moveLeft, 0.3);
   }
-  
+
   //robot is at the center of the skystone
   Encoder_Function(FORWARD, 400, 0.25);
-  
+
 }
 
 } //End of Class

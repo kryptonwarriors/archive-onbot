@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import java.util.Locale;
+import java.util.List;
+import org.firstinspires.ftc.robotcore.external.JavaUtil;
 
 @TeleOp(name = "MotorWorker", group = "")
 public class MotorWorker extends LinearOpMode {
@@ -12,9 +15,8 @@ public class MotorWorker extends LinearOpMode {
   private DcMotor LeftForward;
   private DcMotor LeftBack;
 
-  /**
-   * This function is executed when this Op Mode is selected from the Driver Station.
-   */
+  private Util util; // UTIL
+
   @Override
   public void runOpMode() {
     RightForward = hardwareMap.dcMotor.get("RightForward");
@@ -22,7 +24,13 @@ public class MotorWorker extends LinearOpMode {
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     LeftBack = hardwareMap.dcMotor.get("LeftBack");
 
-    // Put initialization blocks here.
+    util = new Util( LeftFoundation, RightFoundation,
+                    LeftClamp, RightClamp, LeftForward,
+                    LeftBack, RightForward, RightBack,
+                    LinearActuator, LeftCascade, RightCascade,
+                    IMU, Color, BackDistance, RBBumper, RFBumper,
+                    LBBumper, LFBumper);
+
     waitForStart();
     if (opModeIsActive()) {
       // Put run blocks here.
@@ -37,10 +45,7 @@ public class MotorWorker extends LinearOpMode {
         } else if (gamepad1.y) {
           LeftBack.setPower(0.8);
         } else {
-          RightForward.setPower(0);
-          RightBack.setPower(0);
-          LeftBack.setPower(0);
-          LeftForward.setPower(0);
+          util.StopTank();
         }
         if (gamepad1.dpad_down) {
           RightForward.setPower(-0.8);
@@ -51,15 +56,9 @@ public class MotorWorker extends LinearOpMode {
         } else if (gamepad1.dpad_right) {
           LeftBack.setPower(-0.8);
         } else {
-          LeftForward.setPower(0);
-          RightForward.setPower(0);
-          RightBack.setPower(0);
-          LeftBack.setPower(0);
+          util.StopTank();
         }
-        RightForward.setPower(0);
-        RightBack.setPower(0);
-        LeftBack.setPower(0);
-        LeftForward.setPower(0);
+        util.StopTank();
         telemetry.update();
       }
     }
