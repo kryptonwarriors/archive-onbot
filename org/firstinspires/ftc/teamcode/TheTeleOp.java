@@ -104,8 +104,8 @@ public class TheTeleOp extends LinearOpMode {
         LeftBack.setPower(Multiplier * Scale(gamepad1.left_stick_y));
       }
       if (gamepad2.a == true) {
-        LeftClamp.setPosition(0.8);
-        RightClamp.setPosition(0.3);
+        LeftClamp.setPosition(0.9);
+        RightClamp.setPosition(0.25);
           // Clamp in & CLOSE
       }
       if (gamepad2.b == true) {

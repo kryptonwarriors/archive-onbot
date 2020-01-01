@@ -53,6 +53,8 @@ public class REDFoundationPark extends LinearOpMode {
     private Blinker Expansion_Hub;
     private TouchSensor LFBumper;
     private TouchSensor RFBumper;
+    private TouchSensor LBBumper;
+    private TouchSensor RBBumper;
     private HardwareDevice webcam_1;
     private Gyroscope imu_1;
     private Gyroscope imu;
@@ -92,6 +94,9 @@ public class REDFoundationPark extends LinearOpMode {
     BackDistance = hardwareMap.get(DistanceSensor.class, "BackDistance");
     LFBumper = hardwareMap.get(RevTouchSensor.class, "LFBumper");
     RFBumper = hardwareMap.get(RevTouchSensor.class, "RFBumper");
+    LBBumper = hardwareMap.get(RevTouchSensor.class, "LBBumper");
+    RBBumper = hardwareMap.get(RevTouchSensor.class, "RBBumper");
+
 
     LeftFoundation = hardwareMap.servo.get("LeftFoundation");
     RightFoundation = hardwareMap.servo.get("RightFoundation");
@@ -113,53 +118,48 @@ public class REDFoundationPark extends LinearOpMode {
 
     if (opModeIsActive()) {
 
-      Encoder_Function(BACKWARD, 650, 0.3);
+      Encoder_Function(BACKWARD, 500, 0.3);
+      Encoder_Function(LEFT, 200, 0.3);
+      while (! (LBBumper.isPressed() || RBBumper.isPressed()) ) {
+      LeftForward.setPower(0.2);
+      LeftBack.setPower(-0.2);
+      RightForward.setPower(-0.2);
+      RightBack.setPower(0.2);
+      }
+      LeftForward.setPower(0);
+      LeftBack.setPower(0);
+      RightForward.setPower(0);
+      RightBack.setPower(0);
       sleep(500);
-      Encoder_Function(LEFT, 250, 0.3);
 
       LeftFoundation.setPosition(0.28);
       RightFoundation.setPosition(0.72);
-
       sleep(500);
-      RightForward.setPower(0.4);
-      LeftBack.setPower(0.4);
-      LeftForward.setPower(-0.4);
-      RightBack.setPower(-0.4);
-      while (! (LFBumper.isPressed() || RFBumper.isPressed()) ) {
-        telemetry.addData(">", LFBumper.isPressed());
-        telemetry.addData(">", RFBumper.isPressed());
-        telemetry.update();
-      }
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
-      LeftForward.setPower(0);
-      RightBack.setPower(0);
 
+      while (! (LFBumper.isPressed() || RFBumper.isPressed()) ) {
+        LeftForward.setPower(-0.4);
+        LeftBack.setPower(0.4);
+        RightForward.setPower(0.4);
+        RightBack.setPower(-0.4);
+      }
+
+      LeftForward.setPower(0);
+      LeftBack.setPower(0);
+      RightForward.setPower(0);
+      RightBack.setPower(0);
       sleep(500);
 
       LeftFoundation.setPosition(0.80);
       RightFoundation.setPosition(0.22);
+      sleep(500);
 
-      Encoder_Function(RIGHT, 700, 0.4);
+      Encoder_Function(RIGHT, 1350, 0.4);
 
-      RightForward.setPower(0.3);
-      LeftBack.setPower(0.3);
-      LeftForward.setPower(-0.3);
-      RightBack.setPower(-0.3);
-
-      while (! (LFBumper.isPressed() || RFBumper.isPressed()) ) {
-        telemetry.addData(">", "Not Touching");
-        telemetry.update();
-      }
-      Encoder_Function(RIGHT, 300, 0.4);
-
-      RightForward.setPower(0);
-      LeftBack.setPower(0);
       LeftForward.setPower(0);
+      LeftBack.setPower(0);
+      RightForward.setPower(0);
       RightBack.setPower(0);
-
-      telemetry.addData(">", "OP MODE DONE");
-      telemetry.update();
+      
     }
 
   } //End of opmode
