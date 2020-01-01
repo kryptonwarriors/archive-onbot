@@ -73,22 +73,22 @@ public class RightStrafePark extends LinearOpMode {
     int TURNTHRESH = 30;
     String TapeColor = null;
 
-   
+
     @Override
     public void runOpMode() {
 
-    
+
     LeftForward = hardwareMap.dcMotor.get("LeftForward");
     RightForward = hardwareMap.dcMotor.get("RightForward");
     LeftBack = hardwareMap.dcMotor.get("LeftBack");
     RightBack = hardwareMap.dcMotor.get("RightBack");
-    
+
     LinearActuator = hardwareMap.dcMotor.get("LinearActuator");
     LeftCascade = hardwareMap.dcMotor.get("LeftCascade");
     RightCascade = hardwareMap.dcMotor.get("RightCascade");
 
     Color = hardwareMap.get(ColorSensor.class, "Color");
-    
+
     BackDistance = hardwareMap.get(DistanceSensor.class, "BackDistance");
     LFBumper = hardwareMap.get(RevTouchSensor.class, "LFBumper");
     RFBumper = hardwareMap.get(RevTouchSensor.class, "RFBumper");

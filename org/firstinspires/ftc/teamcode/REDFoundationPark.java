@@ -159,7 +159,7 @@ public class REDFoundationPark extends LinearOpMode {
       LeftBack.setPower(0);
       RightForward.setPower(0);
       RightBack.setPower(0);
-      
+
     }
 
   } //End of opmode

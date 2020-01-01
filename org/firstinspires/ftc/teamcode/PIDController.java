@@ -25,7 +25,7 @@ public class PIDController
      * Allocate a PID object with the given constants for P, I, D
      * @param Kp the proportional coefficient
      * @param Ki the integral coefficient
-     * @param Kd the derivative coefficient 
+     * @param Kd the derivative coefficient
      */
     public PIDController(double Kp, double Ki, double Kd)
     {
@@ -34,11 +34,6 @@ public class PIDController
         m_D = Kd;
     }
 
-    /**
-     * Read the input, calculate the output accordingly, and write to the output.
-     * This should only be called by the PIDTask
-     * and is created during initialization.
-     */
     private void calculate()
     {
         int     sign = 1;
@@ -103,7 +98,7 @@ public class PIDController
      * Get the Proportional coefficient
      * @return proportional coefficient
      */
-    public double getP() 
+    public double getP()
     {
         return m_P;
     }
@@ -112,7 +107,7 @@ public class PIDController
      * Get the Integral coefficient
      * @return integral coefficient
      */
-    public double getI() 
+    public double getI()
     {
         return m_I;
     }
@@ -121,7 +116,7 @@ public class PIDController
      * Get the Differential coefficient
      * @return differential coefficient
      */
-    public double getD() 
+    public double getD()
     {
         return m_D;
     }
@@ -156,7 +151,7 @@ public class PIDController
      *  the setpoint.
      * @param continuous Set to true turns on continuous, false turns off continuous
      */
-    public void setContinuous(boolean continuous) 
+    public void setContinuous(boolean continuous)
     {
         m_continuous = continuous;
     }
@@ -167,7 +162,7 @@ public class PIDController
      *  be the same point and automatically calculates the shortest route to
      *  the setpoint.
      */
-    public void setContinuous() 
+    public void setContinuous()
     {
         this.setContinuous(true);
     }
@@ -224,7 +219,7 @@ public class PIDController
      * Returns the current setpoint of the PIDController
      * @return the current setpoint
      */
-    public double getSetpoint() 
+    public double getSetpoint()
     {
         return m_setpoint;
     }
@@ -233,7 +228,7 @@ public class PIDController
      * Retruns the current difference of the input from the setpoint
      * @return the current error
      */
-    public synchronized double getError() 
+    public synchronized double getError()
     {
         return m_error;
     }
@@ -243,7 +238,7 @@ public class PIDController
      * OnTarget. (Input of 15.0 = 15 percent)
      * @param percent error which is tolerable
      */
-    public void setTolerance(double percent) 
+    public void setTolerance(double percent)
     {
         m_tolerance = percent;
     }
@@ -262,7 +257,7 @@ public class PIDController
     /**
      * Begin running the PIDController
      */
-    public void enable() 
+    public void enable()
     {
         m_enabled = true;
     }
@@ -270,7 +265,7 @@ public class PIDController
     /**
      * Stop running the PIDController.
      */
-    public void disable() 
+    public void disable()
     {
         m_enabled = false;
     }

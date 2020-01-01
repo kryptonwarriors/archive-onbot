@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaSkyStone;
 import org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone;
 import java.util.List;
 
-@Autonomous(name = "CenterOfSkystone (Blocks to Java)", group = "")
+@Autonomous(name = "CenterOfSkystone", group = "")
 public class CenterOfSkystone extends LinearOpMode {
 
   private DcMotor LeftForward;
@@ -30,7 +30,7 @@ public class CenterOfSkystone extends LinearOpMode {
   private DistanceSensor Distance2;
   private double eyes;
   private double boxRightEdge;
-  private double boxWidth; 
+  private double boxWidth;
   private double boxLeftEdge;
   private double SkystoneCenter;
   /**
@@ -47,8 +47,6 @@ public class CenterOfSkystone extends LinearOpMode {
     Distance1 = hardwareMap.get(DistanceSensor.class, "Distance1");
     Distance2 = hardwareMap.get(DistanceSensor.class, "Distance2");
 
-    // Sample TFOD Op Mode
-    // Initialize Vuforia.
     LeftForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     RightForward.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     LeftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -57,7 +55,7 @@ public class CenterOfSkystone extends LinearOpMode {
     RightForward.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     LeftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     RightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-   
+
     vuforiaSkyStone.initialize(
         "", // vuforiaLicenseKey
         hardwareMap.get(WebcamName.class, "Webcam 1"), // cameraName
@@ -74,67 +72,65 @@ public class CenterOfSkystone extends LinearOpMode {
         true); // useCompetitionFieldTargetLocations
     // Set min confidence threshold to 0.7
     tfodSkyStone.initialize(vuforiaSkyStone, 0.7F, true, true);
-    // Initialize TFOD before waitForStart.
-    // Init TFOD here so the object detection labels are visible
-    // in the Camera Stream preview window on the Driver Station.
+
     tfodSkyStone.activate();
-    
+
     telemetry.addData(">", "Press Play to start");
     telemetry.update();
-    
+
     // Wait for start command from Driver Station.
     waitForStart();
-    
-    
+
+
     if (opModeIsActive()) {
-      //set power to move forward 
+      //set power to move forward
       LeftForward.setPower(-0.7);
       RightForward.setPower(0.7);
       LeftBack.setPower(-0.7);
       RightBack.setPower(0.7);
-      
+
       eyes = Distance1.getDistance(DistanceUnit.INCH);
-      
-      //move until 16 inches from the alliance wall 
+
+      //move until 16 inches from the alliance wall
       while (eyes < 15) {
         eyes = Distance1.getDistance(DistanceUnit.INCH);
         telemetry.addData("> Distance ( INCH )", Double.parseDouble(JavaUtil.formatNumber(eyes, 2)));
         telemetry.update();
       }
-      
+
       LeftForward.setPower(0);
       RightForward.setPower(0);
       LeftBack.setPower(0);
       RightBack.setPower(0);
       sleep(200);
-      
+
       LeftForward.setPower(0.5);
       RightForward.setPower(0.5);
       LeftBack.setPower(-0.5);
       RightBack.setPower(-0.5);
       sleep(800);
-      
+
       LeftForward.setPower(0);
       RightForward.setPower(0);
       LeftBack.setPower(0);
       RightBack.setPower(0);
       sleep(200);
-      
+
       LeftForward.setPower(-0.1);       //right to skystone
       RightForward.setPower(-0.1);
       LeftBack.setPower(0.1);
       RightBack.setPower(0.1);
-      
+
       SkystoneCenter = 1000;
       DetectSkystone(SkystoneCenter);
-      
+
       LeftForward.setPower(0);
       RightForward.setPower(0);
       LeftBack.setPower(0);
       RightBack.setPower(0);
       sleep(200);
-      
-      //TODO: Go To Foundation and Drop the Skystone 
+
+      //TODO: Go To Foundation and Drop the Skystone
       GoToFoundation();
       telemetry.addData("good1","good1");
       telemetry.update();
@@ -143,73 +139,73 @@ public class CenterOfSkystone extends LinearOpMode {
       telemetry.addData("good2","good2");
       telemetry.update();
       sleep(200);
-      
+
       LeftForward.setPower(-0.7);        //forward to foundation
       RightForward.setPower(0.7);
       LeftBack.setPower(-0.7);
       RightBack.setPower(0.7);
       sleep(200);
-      
+
       LeftForward.setPower(0);
       RightForward.setPower(0);
       LeftBack.setPower(0);
       RightBack.setPower(0);
       sleep(3000);
-      
-      
+
+
       LeftForward.setPower(0.7);        //backwards
       RightForward.setPower(-0.7);
       LeftBack.setPower(0.7);
       RightBack.setPower(-0.7);
       sleep(900);
-      
+
       LeftForward.setPower(0);
       RightForward.setPower(0);
       LeftBack.setPower(0);
       RightBack.setPower(0);
       sleep(200);
-      
+
       LeftForward.setPower(-0.6);     //left
       RightForward.setPower(-0.6);
       LeftBack.setPower(0.6);
       RightBack.setPower(0.6);
       sleep(1300);
-      
+
       LeftForward.setPower(0);
       RightForward.setPower(0);
       LeftBack.setPower(0);
       RightBack.setPower(0);
       sleep(200);
-      
-      LeftForward.setPower(-0.7);        //forward 
+
+      LeftForward.setPower(-0.7);        //forward
       RightForward.setPower(0.7);
       LeftBack.setPower(-0.7);
       RightBack.setPower(0.7);
       sleep(700);
-      
+
       LeftForward.setPower(0);
       RightForward.setPower(0);
       LeftBack.setPower(0);
       RightBack.setPower(0);
       sleep(200);
-      
+
       LeftForward.setPower(-0.6);     //left
       RightForward.setPower(-0.6);
       LeftBack.setPower(0.6);
       RightBack.setPower(0.6);
       sleep(1200);
-      
+
       LeftForward.setPower(0);
       RightForward.setPower(0);
       LeftBack.setPower(0);
       RightBack.setPower(0);
       sleep(200);
-      
-      
+
+
       tfodSkyStone.deactivate();
       vuforiaSkyStone.close();
       tfodSkyStone.close();
-      
+
     }
   }
 
@@ -220,29 +216,29 @@ public class CenterOfSkystone extends LinearOpMode {
     RightForward.setPower(0.5);
     LeftBack.setPower(-0.5);
     RightBack.setPower(-0.5);
-    
-    
+
+
     double eyes2 = Distance2.getDistance(DistanceUnit.INCH);
-      
+
     while (eyes2 > 20) {
         eyes2 = Distance2.getDistance(DistanceUnit.INCH);
         telemetry.addData("> Distance ( INCH )", Double.parseDouble(JavaUtil.formatNumber(eyes, 2)));
         telemetry.update();
     }
-      
+
     LeftForward.setPower(0);
     RightForward.setPower(0);
     LeftBack.setPower(0);
     RightBack.setPower(0);
   }
-  
+
   private void DropStone()
   {
     //cougars
   }
-  
+
   private void DetectSkystone(double SkystoneCenter) {
-    
+
     while (SkystoneCenter > 300 && opModeIsActive()) {
       List<Recognition> recognitions = tfodSkyStone.getRecognitions();
       if (recognitions.size() == 0) {
@@ -264,10 +260,7 @@ public class CenterOfSkystone extends LinearOpMode {
       telemetry.update();
     }
   }
-  
-  /**
-   * Display info (using telemetry) for a recognized object.
-   */
+
   private void displayInfo( int i, Recognition recog) {
     telemetry.addData("label " + i, recog.getLabel());
     telemetry.addData("Top Left" + i, recog.getLeft());
@@ -277,7 +270,7 @@ public class CenterOfSkystone extends LinearOpMode {
     telemetry.addData("Image Width" + i, recog.getImageWidth());
     telemetry.addData("Image Height" + i, recog.getImageHeight());
   }
-  
-  
-  
+
+
+
 }
