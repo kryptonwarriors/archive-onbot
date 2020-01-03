@@ -71,6 +71,7 @@ public class TestCamera extends LinearOpMode {
     private ColorSensor Color;
     private DistanceSensor BackDistance;
     private DistanceSensor LeftDistance;
+    private DistanceSensor RightDistance;
     private Blinker Control_Hub;
     private Blinker Expansion_Hub;
     private TouchSensor LFBumper;
@@ -194,6 +195,7 @@ public class TestCamera extends LinearOpMode {
 
     BackDistance = hardwareMap.get(DistanceSensor.class, "BackDistance");
     LeftDistance = hardwareMap.get(DistanceSensor.class, "LeftDistance");
+    RightDistance = hardwareMap.get(DistanceSensor.class, "RightDistance");
     LFBumper = hardwareMap.get(RevTouchSensor.class, "LFBumper");
     RFBumper = hardwareMap.get(RevTouchSensor.class, "RFBumper");
     LBBumper = hardwareMap.get(RevTouchSensor.class, "LBBumper");
@@ -222,6 +224,7 @@ public class TestCamera extends LinearOpMode {
     imuParameters.loggingEnabled      = false;
     imu = hardwareMap.get(BNO055IMU.class, "imu");
     imu.initialize(imuParameters);
+
 
     // make sure the imu gyro is calibrated before continuing.
     while (!isStopRequested() && !imu.isGyroCalibrated())
@@ -356,41 +359,31 @@ public class TestCamera extends LinearOpMode {
       LeftClamp.setPosition(0.9);
       RightClamp.setPosition(0.25);
       sleep(100);
+      
       RightCascade.setPower(0.2);
       LeftCascade.setPower(0.2);
-      sleep(260);
+      sleep(265);
       RightCascade.setPower(0);
       LeftCascade.setPower(0);
 
       DistancePID(BACKWARD, 26, 0.18, 1.5);
       resetAngle();
-      if (Position == 3) {
+      DistancePID(LEFT, 48, 0.4, 4);
+      /*if (Position == 3) {
         EncoderPID(LEFT, 1200, 0.4);
       } else if (Position == 2) {
         EncoderPID(LEFT, 1500, 0.4);
       } else {
         EncoderPID(LEFT, 1700, 0.4);
-      }
-      resetAngle();
-
-      RightCascade.setPower(0.2);
-      LeftCascade.setPower(0.2);
-      sleep(200);
+      }*/
+      //Go To the Foundation Wall
+      RightCascade.setPower(0.4);
+      LeftCascade.setPower(0.4);
+      sleep(150);
       RightCascade.setPower(0);
       LeftCascade.setPower(0);
-      
-      LeftForward.setPower(0.3);
-      LeftBack.setPower(-0.3);
-      RightForward.setPower(-0.3);
-      RightBack.setPower(0.3);
-      sleep(200);
-      LeftForward.setPower(0);
-      LeftBack.setPower(0);
-      RightForward.setPower(0);
-      RightBack.setPower(0);
-      
-      //Go To the Foundation Wall
-      DistancePID(LEFT, 29, 0.4, 2.2);
+
+      DistancePID(LEFT, 27, 0.4, 2.2);
 
       // Raise Up
       RightCascade.setPower(0.4);
@@ -421,7 +414,7 @@ public class TestCamera extends LinearOpMode {
       sleep(600);
       RightCascade.setPower(0);
       LeftCascade.setPower(0);
-      sleep(1000);
+      sleep(950);
       LinearActuator.setPower(0);
       
       //Turn 180 degrees
@@ -436,16 +429,26 @@ public class TestCamera extends LinearOpMode {
       RightFoundation.setPosition(0.72);
       sleep(800);
 
-      moveUntilFrontBumper(0.5, 2.5);
+      moveUntilFrontBumper(0.4, 2.5);
       //Release Foundation
       LeftFoundation.setPosition(0.68);
       RightFoundation.setPosition(0.22);
       sleep(400);
       //Park
-      Encoder_Function(LEFT, 400, 0.5);
-      Encoder_Function(LEFT, 300, 0.5);
-      Encoder_Function(BACKWARD, 340, 0.4);
-      Encoder_Function(LEFT, 300, 0.5);
+      DistanceUsingRightDist(LEFT, 33, 0.4, 2);
+      telemetry.addData("Ready to Park Up/Down", RightDistance.getDistance(DistanceUnit.INCH));
+      telemetry.update();
+      if (LeftDistance.getDistance(DistanceUnit.INCH) >= 30) {
+        Encoder_Function(LEFT, 960, 0.5);
+        telemetry.addData("Ready to Park", "Down/Wall");
+      telemetry.update();
+      } else {
+        Encoder_Function(LEFT, 300, 0.4);
+        Encoder_Function(BACKWARD, 300, 0.45);
+        Encoder_Function(LEFT, 500, 0.5);
+        telemetry.addData("Ready to Park", "Up/Bridge");
+        telemetry.update();
+      }
 
       
 
@@ -500,7 +503,9 @@ public class TestCamera extends LinearOpMode {
     pidDistDrive.setOutputRange(0, Power);
     StopAndReset();
     while ( Math.abs(LeftForward.getCurrentPosition()) <=  Math.abs(TargetPosition)  && !isStopRequested() ) {
-
+      if (isStopRequested()) {
+        StopDrive();
+      }
 
       if (Direction == LEFT) {
         correction = pidDistDrive.performPID(getAngle());
@@ -549,7 +554,7 @@ public class TestCamera extends LinearOpMode {
       runtime.reset();
     }
     if (Direction == FORWARD) {
-      while (BackDistance.getDistance(DistanceUnit.INCH) < Distance && (failSafeTime > 0 && runtime.seconds() < failSafeTime)) {
+      while (BackDistance.getDistance(DistanceUnit.INCH) < Distance && (failSafeTime > 0 && runtime.seconds() < failSafeTime)&& !isStopRequested()) {
         correction = pidDrive.performPID(getAngle());
         RightForward.setPower(Power+correction);
         LeftBack.setPower(Power-correction);
@@ -566,7 +571,9 @@ public class TestCamera extends LinearOpMode {
       }
     }
     else if (Direction == BACKWARD) {
-      while ( BackDistance.getDistance(DistanceUnit.INCH) > Distance && (failSafeTime > 0 && runtime.seconds() < failSafeTime) ) {
+      
+      while ( BackDistance.getDistance(DistanceUnit.INCH) > Distance && (failSafeTime > 0 && runtime.seconds() < failSafeTime) && !isStopRequested()) {
+       
        correction = pidDrive.performPID(getAngle());
         RightForward.setPower(-Power-correction);
         LeftBack.setPower(-Power+correction);
@@ -583,8 +590,10 @@ public class TestCamera extends LinearOpMode {
       }
     }
       else if (Direction == LEFT) {
-      while (LeftDistance.getDistance(DistanceUnit.INCH) > Distance && (failSafeTime > 0 && runtime.seconds() < failSafeTime)) {
-       correction = pidDistDrive.performPID(getAngle());
+      while (LeftDistance.getDistance(DistanceUnit.INCH) > Distance && (failSafeTime > 0 && runtime.seconds() < failSafeTime) && !isStopRequested()) {
+       if (isStopRequested()) {
+        StopDrive();
+      }correction = pidDistDrive.performPID(getAngle());
         LeftForward.setPower(Power-correction);
         LeftBack.setPower(Power-correction);
         RightForward.setPower(Power+correction);
@@ -600,15 +609,15 @@ public class TestCamera extends LinearOpMode {
         }
       }
       else if (Direction == RIGHT) {
-      while ( LeftDistance.getDistance(DistanceUnit.INCH) < Distance && (failSafeTime > 0 && runtime.seconds() < failSafeTime)  ) {
-       correction = pidDistDrive.performPID(getAngle());
+      while ( LeftDistance.getDistance(DistanceUnit.INCH) < Distance && (failSafeTime > 0 && runtime.seconds() < failSafeTime) && !isStopRequested() ) {
+      correction = pidDistDrive.performPID(getAngle());
         LeftForward.setPower(Power-correction);
         LeftBack.setPower(Power-correction);
         RightForward.setPower(Power+correction);
         RightBack.setPower(Power+correction);
         telemetry.addData("Direction", Direction);
         telemetry.addData("key", "moving");
-        telemetry.addData("BackDistance", BackDistance.getDistance(DistanceUnit.INCH));
+        telemetry.addData("BackDistance", LeftDistance.getDistance(DistanceUnit.INCH));
         telemetry.addData("LFPower", LeftForward.getPower());
         telemetry.addData("RFPower", RightForward.getPower());
         telemetry.addData("LBPower", LeftBack.getPower());
@@ -619,7 +628,46 @@ public class TestCamera extends LinearOpMode {
 
     StopDrive();
   }
+private void DistanceUsingRightDist(int Direction, double Distance, double Power, double failSafeTime) {
+    StopAndReset();
+    if (failSafeTime > 0) {
+      runtime.reset();
+    }
+     if (Direction == LEFT) {
+      while (RightDistance.getDistance(DistanceUnit.INCH) < Distance && (failSafeTime > 0 && runtime.seconds() < failSafeTime) && !isStopRequested()) {
+        LeftForward.setPower(Power);
+        LeftBack.setPower(Power);
+        RightForward.setPower(Power);
+        RightBack.setPower(Power);
+        telemetry.addData("Direction", Direction);
+        telemetry.addData("key", "moving");
+        telemetry.addData("RightDistance", RightDistance.getDistance(DistanceUnit.INCH));
+        telemetry.addData("LFPower", LeftForward.getPower());
+        telemetry.addData("RFPower", RightForward.getPower());
+        telemetry.addData("LBPower", LeftBack.getPower());
+        telemetry.addData("RBPower", RightBack.getPower());
+        telemetry.update();
+        }
+      }
+      else if (Direction == RIGHT) {
+      while ( RightDistance.getDistance(DistanceUnit.INCH) < Distance && (failSafeTime > 0 && runtime.seconds() < failSafeTime) && !isStopRequested() ) {
+        LeftForward.setPower(Power);
+        LeftBack.setPower(Power);
+        RightForward.setPower(Power);
+        RightBack.setPower(Power);
+        telemetry.addData("Direction", Direction);
+        telemetry.addData("key", "moving");
+        telemetry.addData("BackDistance", RightDistance.getDistance(DistanceUnit.INCH));
+        telemetry.addData("LFPower", LeftForward.getPower());
+        telemetry.addData("RFPower", RightForward.getPower());
+        telemetry.addData("LBPower", LeftBack.getPower());
+        telemetry.addData("RBPower", RightBack.getPower());
+        telemetry.update();
+      }
+    }
 
+    StopDrive();
+  }
   private void Encoder_Function(int Direction, int TargetPosition, double Power)
   {
     StopAndReset();
@@ -736,7 +784,7 @@ private void adjust() {
       RightForward.setPower(-0.27);
       LeftBack.setPower(-0.27);
       RightBack.setPower(-0.27);
-      while (!(SkyStonePos == "Center")){
+      while (!(SkyStonePos == "Center") && !isStopRequested()){
         telemetry.addData("yPos", yPos);
         telemetry.update();
       }
@@ -751,7 +799,7 @@ private void adjust() {
       RightForward.setPower(0.27);
       LeftBack.setPower(0.27);
       RightBack.setPower(0.27);
-      while (!(SkyStonePos == "Center")){
+      while (!(SkyStonePos == "Center") && !isStopRequested()){
         telemetry.addData("yPos", yPos);
         telemetry.update();
       }
@@ -819,7 +867,8 @@ private void moveUntilFrontBumper (double Power, double failSafeTime) {
         if (failSafeTime > 0) {
           runtime.reset();
         }
-        while (!(LFBumper.isPressed() || RFBumper.isPressed()) && (runtime.seconds() < failSafeTime && failSafeTime > 0)) {
+        while (!(LFBumper.isPressed() || RFBumper.isPressed()) && (runtime.seconds() < failSafeTime && failSafeTime > 0) && !isStopRequested()) {
+          
           telemetry.addData("LeftBumper", LFBumper.isPressed());
           telemetry.addData("RightBumper", RFBumper.isPressed());
           telemetry.update();
@@ -831,7 +880,10 @@ private void moveUntilBackBumper (double Power) {
         LeftBack.setPower(-Power);
         LeftForward.setPower(Power);
         RightBack.setPower(Power);
-        while (! (LBBumper.isPressed() || RBBumper.isPressed()) ) {
+        while (! (LBBumper.isPressed() || RBBumper.isPressed()) && !isStopRequested() ) {
+          if (isStopRequested()) {
+            StopDrive();
+          }
           telemetry.addData("LeftBackBumper", LBBumper.isPressed());
           telemetry.addData("RightBackBumper", RBBumper.isPressed());
           telemetry.update();
