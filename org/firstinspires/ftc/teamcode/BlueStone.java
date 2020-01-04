@@ -369,7 +369,7 @@ public class BlueStone extends LinearOpMode {
       DistancePID(BACKWARD, 26, 0.18, 3);
       resetAngle();
       //DistancePID(LEFT, 48, 0.4, 4);
-      EncoderPID(LEFT, 1500, 0.5);
+      EncoderPID(LEFT, 1700, 0.5);
       RightForward.setPower(-0.3);
       LeftBack.setPower(-0.3);
       LeftForward.setPower(0.3);
@@ -399,10 +399,10 @@ public class BlueStone extends LinearOpMode {
       RightCascade.setPower(0.4);
       LeftCascade.setPower(0.4);
       LinearActuator.setPower(0.8);
-      sleep(500);
+      sleep(450);
       RightCascade.setPower(0);
       LeftCascade.setPower(0);
-      sleep(530);
+      sleep(580);
       LinearActuator.setPower(0);
       
       // Go Forward
