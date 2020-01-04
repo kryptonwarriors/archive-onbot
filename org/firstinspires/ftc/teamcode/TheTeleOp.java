@@ -135,8 +135,8 @@ public class TheTeleOp extends LinearOpMode {
           RightClamp.setPosition(0);
         }
         if (gamepad2.right_bumper == true) {
-          LeftClamp.setPosition(0.95);
-          RightClamp.setPosition(0.2);
+          LeftClamp.setPosition(0.98);
+          RightClamp.setPosition(0.18);
         }
         LinearActuator.setPower(gamepad2.right_stick_y * -0.8);
         RightCascade.setPower(gamepad2.left_stick_y * -0.5);

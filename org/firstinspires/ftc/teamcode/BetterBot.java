@@ -31,18 +31,6 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 @Autonomous(name = "BetterBot", group = "")
 public class BetterBot extends LinearOpMode {
 
