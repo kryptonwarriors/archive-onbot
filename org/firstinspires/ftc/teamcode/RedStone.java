@@ -429,9 +429,12 @@ public class RedStone extends LinearOpMode {
       LeftCascade.setPower(0);
       sleep(950);
       LinearActuator.setPower(0);
-
-      EncoderPID(LEFT, 1050, 0.6);
-
+      
+      //DistancePID(BACKWARD, 5, 0.6, 1 );
+      
+      
+      EncoderPID(LEFT, 1100, 0.6);
+      EncoderPID(BACKWARD, 400, 0.5);
     } // end of if opmode active
 
 

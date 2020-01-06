@@ -109,9 +109,9 @@ public class DELAYRightStrafePark extends LinearOpMode {
     waitForStart();
 
     if (opModeIsActive()) {
-      sleep(10000);
-      Encoder_Function(FORWARD, 50, 0.5);
-      Encoder_Function(RIGHT, 550, 0.5);
+      sleep(22500);
+      //Encoder_Function(FORWARD, 50, 0.5);
+      Encoder_Function(RIGHT, 120, 0.5);
       // Encoder_Function(BACKWARD, 1000, 0.3);
     }
 

@@ -283,7 +283,7 @@ public class RedFull extends LinearOpMode {
       }
 
       if (!targetVisible) {
-        EncoderPID(LEFT, 190, 0.3);
+        EncoderPID(LEFT, 170, 0.3);
         runtime.reset();
         while (opModeIsActive() && (!(targetVisible) && runtime.seconds() < 1)){
           for (VuforiaTrackable trackable : allTrackables) {
@@ -307,7 +307,7 @@ public class RedFull extends LinearOpMode {
       }
 
       if (!targetVisible) {
-        EncoderPID(LEFT, 170, 0.3);
+        EncoderPID(LEFT, 160, 0.3);
         runtime.reset();
         while (opModeIsActive() && (!(targetVisible) && runtime.seconds() < 1)){
           for (VuforiaTrackable trackable : allTrackables) {
@@ -831,16 +831,16 @@ private void actualAdjust() {
 
   //while(!(SkyStonePos == "Center")) {
     if(SkyStonePos == "Left") {
-      int moveRight = ((int)Math.abs(yPos - 0.85) * 18) + 35;
+      int moveRight = ((int)Math.abs(yPos - 0.85) * 16) + 30;
       telemetry.addData("right", moveRight);
       telemetry.update();
-      Encoder_Function(RIGHT, moveRight, 0.26);
+      EncoderPID(RIGHT, moveRight, 0.26);
     }
     else if(SkyStonePos == "Right") {
-      int moveLeft = ((int)Math.abs(0.75 - yPos) * 18) + 35;
+      int moveLeft = ((int)Math.abs(0.75 - yPos) * 16) + 30;
       telemetry.addData("left", moveLeft);
       telemetry.update();
-      Encoder_Function(LEFT, moveLeft, 0.26);
+      EncoderPID(LEFT, moveLeft, 0.26);
     }
   //}
   //robot is at the center of the skystone

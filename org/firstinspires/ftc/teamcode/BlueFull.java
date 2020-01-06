@@ -393,7 +393,7 @@ public class BlueFull extends LinearOpMode {
       RightCascade.setPower(0);
       LeftCascade.setPower(0);
 
-      DistancePID(LEFT, 27, 0.4, 2.2);
+      DistancePID(LEFT, 28, 0.4, 2.2);
 
       // Raise Up
       RightCascade.setPower(0.4);
@@ -429,7 +429,7 @@ public class BlueFull extends LinearOpMode {
       
       //Turn 180 degrees
       Encoder_Function(RTurn, 950, 0.5);
-      Encoder_Function(RIGHT, 150, 0.5);
+      Encoder_Function(RIGHT, 110, 0.5);
 
       moveUntilBackBumper(0.4);
 
@@ -451,7 +451,7 @@ public class BlueFull extends LinearOpMode {
       telemetry.addData("Ready to Park Up/Down", RightDistance.getDistance(DistanceUnit.INCH));
       telemetry.update();
       if (LeftDistance.getDistance(DistanceUnit.INCH) >= 30) {
-        Encoder_Function(LEFT, 860, 0.5);
+        Encoder_Function(LEFT, 800, 0.5);
         telemetry.addData("Ready to Park", "Down/Wall");
       telemetry.update();
       } else {
@@ -827,13 +827,13 @@ private void actualAdjust() {
 
   //while(!(SkyStonePos == "Center")) {
     if(SkyStonePos == "Left") {
-      int moveRight = ((int)Math.abs(yPos - 0.85) * 18) + 35;
+      int moveRight = ((int)Math.abs(yPos - 0.85) * 15) + 35;
       telemetry.addData("right", moveRight);
       telemetry.update();
       Encoder_Function(RIGHT, moveRight, 0.26);
     }
     else if(SkyStonePos == "Right") {
-      int moveLeft = ((int)Math.abs(0.75 - yPos) * 18) + 35;
+      int moveLeft = ((int)Math.abs(0.75 - yPos) * 15) + 35;
       telemetry.addData("left", moveLeft);
       telemetry.update();
       Encoder_Function(LEFT, moveLeft, 0.26);
