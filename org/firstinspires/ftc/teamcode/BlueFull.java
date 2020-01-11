@@ -105,12 +105,11 @@ public class BlueFull extends LinearOpMode {
     private static final String VUFORIA_KEY =
             "ATtMcMX/////AAABmb5pRDectEzdvJK1epLa9N9J1oqdQ6gzb2cBjuQ0nEhg5aIm3m+cYXYZTqSUY+v8yGl8+UiYCyyG6cSF5DpWvqqy/x/cYYrv02jiaW7mhTX4B8Pfk3TcqT+COr1Z7tQqgHect1mujWffOu7TBJ5MU03uFHDUG5+X/xrSiu7mgsl+/DOILeUhXtz/8oqJVlJ/kMbFtstisbLtjui227t77vif/T0w8ZIMjB8HsKysbrk88ueZe2Sx2aEWJpUtUca4Z4DytfS4yS46lHhOEqKwLth/xHMtCFZ1nickcitpagXXRf2wTxhKOd8T9i6fnb6v/00weiIZnxfujgWpYZIab1So+yYLPWmvVLjRKRkDuYGL";
 
-     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
-    // We will define some constants and conversions here
+     
     private static final float mmPerInch        = 25.4f;
     private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
 
-    // Constant for Stone Target
+    
     private static final float stoneZ = 2.00f * mmPerInch;
 
     // Constants for the center support targets
@@ -133,10 +132,6 @@ public class BlueFull extends LinearOpMode {
     double        globalAngle, correction;
     Orientation   lastAngles = new Orientation();
 
-    /**
-     * This is the webcam we are to use. As with other hardware devices such as motors and
-     * servos, this device is identified using the robot configuration tool in the FTC application.
-     */
     WebcamName webcamName = null;
 
     private boolean targetVisible = false;
@@ -266,8 +261,7 @@ public class BlueFull extends LinearOpMode {
           if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible() && !isStopRequested()) {
               targetVisible = true;
               Position = 3;
-              // getUpdatedRobotLocation() will return null if no new information is available since
-              // the last time that call was made, or if the trackable is not currently visible.
+              
               OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
               if (robotLocationTransform != null) {
                 lastLocation = robotLocationTransform;
@@ -289,8 +283,7 @@ public class BlueFull extends LinearOpMode {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                 targetVisible = true;
                 Position = 2;
-                // getUpdatedRobotLocation() will return null if no new information is available since
-                // the last time that call was made, or if the trackable is not currently visible.
+                
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
                   lastLocation = robotLocationTransform;
@@ -313,8 +306,6 @@ public class BlueFull extends LinearOpMode {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                 targetVisible = true;
                 Position = 3; 
-                // getUpdatedRobotLocation() will return null if no new information is available since
-                // the last time that call was made, or if the trackable is not currently visible.
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
                   lastLocation = robotLocationTransform;
@@ -333,7 +324,6 @@ public class BlueFull extends LinearOpMode {
         LinearActuator.setPower(0.8);
         sleep(500);
         LinearActuator.setPower(0);
-        // Provide feedback as to where the robot is located (if we know).
         SkyStonePos = "";
         checkForSkystone();
         sleep(100);
@@ -379,13 +369,7 @@ public class BlueFull extends LinearOpMode {
       LeftBack.setPower(0);
       LeftForward.setPower(0);
       RightBack.setPower(0);
-      /*if (Position == 3) {
-        EncoderPID(LEFT, 1200, 0.4);
-      } else if (Position == 2) {
-        EncoderPID(LEFT, 1500, 0.4);
-      } else {
-        EncoderPID(LEFT, 1700, 0.4);
-      }*/
+      
       //Go To the Foundation Wall
       RightCascade.setPower(0.4);
       LeftCascade.setPower(0.4);
@@ -475,11 +459,7 @@ public class BlueFull extends LinearOpMode {
    */
   private double getAngle()
   {
-      // We experimentally determined the Z axis is the axis we want to use for heading angle.
-      // We have to process the angle because the imu works in euler angles so the Z axis is
-      // returned as 0 to +180 or 0 to -180 rolling back to -179 or +179 when rotation passes
-      // 180 degrees. We detect this transition and track the total cumulative angle of rotation.
-
+      
       Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
       double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
@@ -635,7 +615,7 @@ public class BlueFull extends LinearOpMode {
         telemetry.update();
       }
     }
-
+    
     StopDrive();
   }
 private void DistanceUsingRightDist(int Direction, double Distance, double Power, double failSafeTime) {
@@ -759,8 +739,7 @@ private void checkForSkystone() {
 
   if (targetVisible) {
 
-    // express position (translation) of robot in inches.
-    VectorF translation = lastLocation.getTranslation();
+    VectorF translation = lastLocation.getTranslation(); //Translation in INCHES
     telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
       translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
       yPos = translation.get(1)/mmPerInch;
